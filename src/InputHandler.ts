@@ -26,17 +26,23 @@ export default class InputHandler {
     }
 
     Handle() {
+        let playerMoved = false;
+        
         for (let i = 0; i < this.KeysDown.length; i++) {
             switch (this.KeysDown[i]) {
                 case "ArrowLeft":
                     GameBrain.Instance.Player.Controller.MoveLeft();
+                    playerMoved = true;
                     break;
                 case "ArrowRight":
                     GameBrain.Instance.Player.Controller.MoveRight();
+                    playerMoved = true;
                     break;
                 default:
                     break;
             }
         }
+        
+        if (!playerMoved) GameBrain.Instance.Player.Controller.Stop();
     }
 }

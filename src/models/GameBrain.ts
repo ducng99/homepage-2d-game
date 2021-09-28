@@ -2,6 +2,7 @@ import InputHandler from "../InputHandler";
 import GameMap from "./Map";
 import Player from "./Player";
 import { UpdateTick } from '../FPSCounter'
+import Entity from "./Entity";
 
 export default class GameBrain {
     private static _instance?: GameBrain;
@@ -28,9 +29,15 @@ export default class GameBrain {
     }
     
     public UpdateView?: Function;
+    
+    private _entitiesList: Entity[] = [];
+    get EntitiesList() {
+        return this._entitiesList;
+    }
 
     private constructor() {
         this._player = new Player;
+        this.EntitiesList.push(this._player);
         this._map = new GameMap;
         setInterval(this.Update.bind(this), 1000 / 60);
     }
@@ -38,6 +45,10 @@ export default class GameBrain {
     private Update() {
         UpdateTick();
         InputHandler.Instance.Handle();
+        
+        for (let i = 0; i < this.EntitiesList.length; i++) {
+            this.EntitiesList[i].Update();
+        }
         
         if (this.UpdateView) {
             this.UpdateView();

@@ -1,16 +1,21 @@
-let lastTick = 0;
-let currentTick = 0;
-let lastFPS = 0;
-let currentFPS = 0;
+let lastTick = Date.now();
+let currentTick = Date.now();
+let lastFPS: number[] = [];
 
 export function UpdateTick() {
     lastTick = currentTick;
     currentTick = Date.now();
+    
+    let tmp = GetRawFPS();
+    if (lastFPS.length === 60)
+        lastFPS.shift();
+    lastFPS.push(tmp);
 }
 
 export function GetFPS() {
-    let tmp = (lastFPS + Math.floor((1000 / (currentTick - lastTick)) * 10) / 10) / 2;
-    lastFPS = currentFPS;
-    currentFPS = tmp;
-    return currentFPS;
+    return lastFPS.length ? Math.round(lastFPS.reduce((a, b) => a + b) / lastFPS.length * 10) / 10 : 0;
+}
+
+export function GetRawFPS() {
+    return 1000 / (currentTick - lastTick);
 }

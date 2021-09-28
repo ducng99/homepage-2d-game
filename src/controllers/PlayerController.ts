@@ -8,10 +8,21 @@ export default class PlayerController {
     }
 
     public MoveLeft() {
-        this.player.Position.MoveX(-1);
+        if (this.player.Speed > 0) this.player.Speed = 0;
+        this.player.Speed -= 1;
     }
 
     public MoveRight() {
-        this.player.Position.MoveX(1);
+        if (this.player.Speed < 0) this.player.Speed = 0;
+        this.player.Speed += 1;
+    }
+    
+    public Stop() {
+        if (this.player.Speed > 0) {
+            this.player.Speed -= 1;
+        }
+        else if (this.player.Speed < 0) {
+            this.player.Speed += 1;
+        }
     }
 }
