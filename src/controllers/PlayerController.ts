@@ -1,5 +1,5 @@
 import Player from "../models/Player";
-import { GetFrametime } from "../FPSCounter";
+import { FrameTimeRatio } from '../utils/SpeedUtils'
 
 export default class PlayerController {
     private player: Player
@@ -10,12 +10,12 @@ export default class PlayerController {
 
     MoveLeft() {
         if (this.player.Speed > 0) this.player.Speed = 0;
-        this.player.Speed -= 1 * (GetFrametime() / (1000 / 60));
+        this.player.Speed -= 1 * FrameTimeRatio();
     }
 
     MoveRight() {
         if (this.player.Speed < 0) this.player.Speed = 0;
-        this.player.Speed += 1 * (GetFrametime() / (1000 / 60));
+        this.player.Speed += 1 * FrameTimeRatio();
     }
     
     Stop() {

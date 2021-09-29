@@ -1,6 +1,7 @@
 import PlayerController from '../controllers/PlayerController';
 import Entity from './Entity'
 import Movable from './Movable'
+import { FrameTimeRatio } from '../utils/SpeedUtils'
 import { Mixin } from 'ts-mixer'
 
 export enum PlayerState {
@@ -25,6 +26,6 @@ export default class Player extends Mixin(Entity, Movable) {
     }
 
     Update(): void {
-        this.Position.MoveX(this.Speed);
+        this.Position.MoveX(this.Speed * FrameTimeRatio());
     }
 }
