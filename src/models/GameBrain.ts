@@ -6,7 +6,7 @@ import Entity from "./Entity";
 
 export default class GameBrain {
     private static _instance?: GameBrain;
-    public static get Instance() {
+    static get Instance() {
         if (!this._instance) {
             this._instance = new GameBrain;
         }
@@ -14,7 +14,7 @@ export default class GameBrain {
         return this._instance;
     }
 
-    public static DestroyInstance() {
+    static DestroyInstance() {
         this._instance = undefined;
     }
 
@@ -28,7 +28,7 @@ export default class GameBrain {
         return this._map;
     }
     
-    public UpdateView?: Function;
+    UpdateView?: Function;
     
     private _entitiesList: Entity[] = [];
     get EntitiesList() {

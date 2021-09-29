@@ -1,4 +1,5 @@
 import Player from "../models/Player";
+import { GetFrametime } from "../FPSCounter";
 
 export default class PlayerController {
     private player: Player
@@ -7,22 +8,22 @@ export default class PlayerController {
         this.player = player;
     }
 
-    public MoveLeft() {
+    MoveLeft() {
         if (this.player.Speed > 0) this.player.Speed = 0;
-        this.player.Speed -= 1;
+        this.player.Speed -= 1 * (GetFrametime() / (1000 / 60));
     }
 
-    public MoveRight() {
+    MoveRight() {
         if (this.player.Speed < 0) this.player.Speed = 0;
-        this.player.Speed += 1;
+        this.player.Speed += 1 * (GetFrametime() / (1000 / 60));
     }
     
-    public Stop() {
-        if (this.player.Speed > 0) {
-            this.player.Speed -= 1;
+    Stop() {
+        if (this.player.Speed <= 0.1 && this.player.Speed >= -0.1) {
+            this.player.Speed = 0;
         }
-        else if (this.player.Speed < 0) {
-            this.player.Speed += 1;
+        else if (this.player.Speed > 0.1 || this.player.Speed < -0.1) {
+            this.player.Speed -= this.player.Speed / 3;
         }
     }
 }

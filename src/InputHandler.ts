@@ -2,7 +2,7 @@ import GameBrain from "./models/GameBrain";
 
 export default class InputHandler {
     private static _instance?: InputHandler
-    public static get Instance() {
+    static get Instance() {
         if (!this._instance) {
             this._instance = new InputHandler
         }

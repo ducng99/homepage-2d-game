@@ -1,21 +1,21 @@
 let lastTick = Date.now();
 let currentTick = Date.now();
-let lastFPS: number[] = [];
+let fpsList: number[] = [];
 
 export function UpdateTick() {
     lastTick = currentTick;
     currentTick = Date.now();
     
-    let tmp = GetRawFPS();
-    if (lastFPS.length === 60)
-        lastFPS.shift();
-    lastFPS.push(tmp);
+    let fps = 1000 / GetFrametime();
+    if (fpsList.length === 60)
+        fpsList.shift();
+    fpsList.push(fps);
 }
 
 export function GetFPS() {
-    return lastFPS.length ? Math.round(lastFPS.reduce((a, b) => a + b) / lastFPS.length * 10) / 10 : 0;
+    return fpsList.length ? Math.round(fpsList.reduce((a, b) => a + b) / fpsList.length * 10) / 10 : 0;
 }
 
-export function GetRawFPS() {
-    return 1000 / (currentTick - lastTick);
+export function GetFrametime() {
+    return currentTick - lastTick;
 }
