@@ -9,6 +9,8 @@ interface IProps {
 export default function PlayerView(props: IProps) {
     const style: React.CSSProperties = {
         position: 'absolute',
+        width: '4rem',
+        height: '8rem',
         left: props.player.Position.x,
         top: props.player.Position.y,
         transform: `scaleX(${props.player.Direction === Direction.Left ? -1 : 1})`

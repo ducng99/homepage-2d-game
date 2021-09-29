@@ -1,17 +1,34 @@
+import MoveController from "../controllers/MoveController";
+
 export enum Direction {
     Left, Right
 }
 
 export default class Movable {
-    MAX_MOVE_SPEED = 10;
+    protected MAX_MOVE_SPEED = 10;
+    MAX_JUMP_SPEED = 20;
+    static readonly GRAVITY_SPEED = -9.81;   // Just for fun, but it works so...
+
+    private _moveController?: MoveController;
+    private _moveSpeed = 0;
+    private _jumpSpeed = Movable.GRAVITY_SPEED;
+    private _direction = Direction.Right;
     
-    private _speed = 0;
-    get Speed() {
-        return this._speed;
+    get MoveController() {
+        if (!this._moveController) {
+            this._moveController = new MoveController(this);
+        }
+
+        return this._moveController;
     }
-    set Speed(value) {
+    
+    get MoveSpeed() {
+        return this._moveSpeed;
+    }
+    
+    set MoveSpeed(value) {
         if (value <= this.MAX_MOVE_SPEED && value >= -this.MAX_MOVE_SPEED) {
-            this._speed = value;
+            this._moveSpeed = value;
             if (value > 0) {
                 this._direction = Direction.Right;
             }
@@ -21,7 +38,16 @@ export default class Movable {
         }
     }
     
-    private _direction = Direction.Right;
+    get JumpSpeed() {
+        return this._jumpSpeed;
+    }
+    
+    set JumpSpeed(value) {
+        if (value >= Movable.GRAVITY_SPEED && value <= this.MAX_JUMP_SPEED) {
+            this._jumpSpeed = value;
+        }
+    }
+    
     get Direction() {
         return this._direction;
     }

@@ -27,22 +27,28 @@ export default class InputHandler {
 
     Handle() {
         let playerMoved = false;
+        let playerJumped = false;
         
         for (let i = 0; i < this.KeysDown.length; i++) {
             switch (this.KeysDown[i]) {
                 case "ArrowLeft":
-                    GameBrain.Instance.Player.Controller.MoveLeft();
+                    GameBrain.Instance.Player.MoveController.MoveLeft();
                     playerMoved = true;
                     break;
                 case "ArrowRight":
-                    GameBrain.Instance.Player.Controller.MoveRight();
+                    GameBrain.Instance.Player.MoveController.MoveRight();
                     playerMoved = true;
+                    break;
+                case "Space":
+                case " ":
+                    playerJumped = GameBrain.Instance.Player.MoveController.Jump();
                     break;
                 default:
                     break;
             }
         }
         
-        if (!playerMoved) GameBrain.Instance.Player.Controller.Stop();
+        if (!playerMoved) GameBrain.Instance.Player.MoveController.StopMove();
+        if (!playerJumped) GameBrain.Instance.Player.MoveController.StopJump();
     }
 }
