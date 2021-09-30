@@ -1,22 +1,20 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import GameBrain from './models/GameBrain'
-import PlayerView from './views/PlayerView'
+import Renderer from './views/Renderer'
 import InputHandler from './InputHandler'
-import { GetFPS } from './FPSCounter'
 
 function App() {
     const [_, updateTick] = useState(0);
     const ForceUpdate = () => updateTick(t => t + 1)
-    
+
     const [fps, setFPS] = useState(0);
 
-    useEffect(() => {
+    useEffect(() => {        
         setInterval(() => {
-            setFPS(GetFPS());
+            setFPS(Math.floor(Renderer.Instance.FPS * 10) / 10);
         }, 1000);
-        
-        GameBrain.Instance.UpdateView = ForceUpdate;
+
+        //GameBrain.Instance.UpdateView = ForceUpdate;
 
         document.body.addEventListener('keydown', handleOnKeyDown);
         document.body.addEventListener('keyup', handleOnKeyUp);
@@ -37,8 +35,7 @@ function App() {
 
     return (
         <div className="App">
-            <div style={{ position: 'absolute', top: 10, left: 10 }}>FPS: {fps}</div>
-            <PlayerView player={GameBrain.Instance.Player} />
+            <div style={{ position: 'fixed', top: 10, left: 10, color: 'white', zIndex: 2 }}>FPS: {fps}</div>
         </div>
     )
 }

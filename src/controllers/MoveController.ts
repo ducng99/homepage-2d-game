@@ -39,8 +39,8 @@ export default class MoveController {
     StopJump() {
         if (this.entity.JumpSpeed > Movable.GRAVITY_SPEED)
         {
-            if (this.entity.JumpSpeed >= 0 && this.entity.JumpSpeed <= 0.5) {
-                this.entity.JumpSpeed -= 0.6;
+            if (this.entity.JumpSpeed >= 0 && this.entity.JumpSpeed <= 1) {
+                this.entity.JumpSpeed -= 2;
             }
             else {
                 let delta = Math.abs(this.entity.JumpSpeed) / 5;

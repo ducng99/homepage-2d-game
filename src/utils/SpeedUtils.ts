@@ -1,5 +1,5 @@
-import { GetFrametime } from "../FPSCounter";
+import Renderer from "../views/Renderer";
 
 export function FrameTimeRatio(fps = 60) {
-    return GetFrametime() / (1000 / fps);
+    return Renderer.Instance.FrameTime / (1000 / fps);
 }
