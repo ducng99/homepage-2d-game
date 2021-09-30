@@ -17,6 +17,8 @@ export default class Renderer {
     
     private _frametime = 0;
     get FrameTime() { return this._frametime }
+    
+    Scale = 3;
 
     private constructor() {
         this.App = new PIXI.Application();
@@ -34,9 +36,14 @@ export default class Renderer {
     }
 
     private Init() {
-        TextureManager.Load('/assets/maps/blocks.json').then(mgr => {
+        TextureManager.Load('/assets/maps/blocks.json').then(textures_mgr => {
             MapManager.Load('/assets/maps/map1.json').then(map_mgr => {
-                map_mgr.Init(mgr);
+                map_mgr.Init(textures_mgr);
+                map_mgr.SpritesContainer.scale.set(this.Scale, this.Scale);
+                
+                // Match center in the view
+                map_mgr.SpritesContainer.position.y -= (map_mgr.Height - this.App.view.height) / 2;
+                
                 this.App.stage.addChild(map_mgr.SpritesContainer);
             })
         });

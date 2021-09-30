@@ -6,9 +6,17 @@ import * as PIXI from 'pixi.js'
 export default class MapManager {
     private constructor() { }
 
-    private Layers: Layer[] = []
+    private _mapInfo?: MapStruct;
+    get MapInfo() { return this._mapInfo }
+    
+    get Height() {
+        return (this.MapInfo?.height ?? 0) * (this.MapInfo?.tileheight ?? 0) * this.SpritesContainer.scale.y;
+    }
+    get Width() {
+        return (this.MapInfo?.width ?? 0) * (this.MapInfo?.tilewidth ?? 0) * this.SpritesContainer.scale.x;
+    }
+    
     private _spritesContainer: PIXI.ParticleContainer = new PIXI.ParticleContainer(1500, {});
-
     get SpritesContainer() { return this._spritesContainer }
 
     static async Load(jsonPath: string) {
@@ -16,7 +24,7 @@ export default class MapManager {
 
         try {
             const mapData = (await (await fetch(jsonPath)).json()) as MapStruct;
-            instance.Layers = mapData.layers;
+            instance._mapInfo = mapData;
 
             return instance;
         }
@@ -27,24 +35,20 @@ export default class MapManager {
     }
 
     Init(textureMgr: TilesetManager) {
-        this.Layers.forEach(layer => {
-            const data = [...layer.data];   // splice will modify the original array
+        this.MapInfo!.layers.forEach(layer => {
+            const data = [...layer.data];   // splice will modify the original array -> create copy
 
             for (let col = 0; col < layer.height; col++) {
-                const rowData = data.splice(0, layer.width);    // because splice cuts off the original array for us, we always start from 0
+                const rowData = data.splice(0, layer.width);
 
-                for (let row = 0; row < layer.width; row++) {
-                    const textureID = rowData[row];
-
+                rowData.forEach((textureID, row) => {
                     if (textureID > 0) {
                         const sprite = new PIXI.Sprite(textureMgr.Textures[textureID - 1]);
-                        sprite.x = row * sprite.texture.width * 1.5;
-                        sprite.y = col * sprite.texture.height * 1.5;
-                        sprite.scale.x = 1.5;
-                        sprite.scale.y = 1.5;
+                        sprite.x = row * sprite.texture.width;
+                        sprite.y = col * sprite.texture.height;
                         this.SpritesContainer.addChild(sprite);
                     }
-                }
+                });
             }
         });
     }
