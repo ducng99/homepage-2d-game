@@ -1,4 +1,4 @@
-import Movable from "../models/Movable";
+import Movable from "../models/extensions/Movable";
 import Renderer from "../views/Renderer";
 
 export default class MoveController {

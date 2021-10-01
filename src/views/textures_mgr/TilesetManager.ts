@@ -10,10 +10,12 @@ export default class TextureManager {
 
     static async Load(jsonPath: string) {
         const instance = new TextureManager;
+        const Loader = new PIXI.Loader;
+        
         try {
             await new Promise(resolve => {
-                PIXI.Loader.shared.add(jsonPath).load(() => {
-                    const textures = PIXI.Loader.shared.resources[jsonPath].textures;
+                Loader.add(jsonPath).load(() => {
+                    const textures = Loader.resources[jsonPath].textures;
 
                     if (textures) {
                         // forEach is 50 times faster than for...in ¯\_(ツ)_/¯

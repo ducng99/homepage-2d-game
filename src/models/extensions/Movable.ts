@@ -1,4 +1,4 @@
-import MoveController from "../controllers/MoveController";
+import MoveController from "../../controllers/MoveController";
 
 export enum Direction {
     Left, Right

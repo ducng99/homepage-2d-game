@@ -4,17 +4,14 @@ import Renderer from './views/Renderer'
 import InputHandler from './InputHandler'
 
 function App() {
-    const [_, updateTick] = useState(0);
-    const ForceUpdate = () => updateTick(t => t + 1)
-
     const [fps, setFPS] = useState(0);
 
-    useEffect(() => {        
+    useEffect(() => {
+        Renderer.Instance.Init();
+
         setInterval(() => {
             setFPS(Math.floor(Renderer.Instance.FPS * 10) / 10);
         }, 1000);
-
-        //GameBrain.Instance.UpdateView = ForceUpdate;
 
         document.body.addEventListener('keydown', handleOnKeyDown);
         document.body.addEventListener('keyup', handleOnKeyUp);

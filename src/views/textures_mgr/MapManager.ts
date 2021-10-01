@@ -1,6 +1,5 @@
-import { Layer, MapStruct } from './MapStruct'
+import { MapStruct } from './MapStruct'
 import TilesetManager from './TilesetManager'
-import Renderer from '../Renderer'
 import * as PIXI from 'pixi.js'
 
 export default class MapManager {
@@ -34,7 +33,7 @@ export default class MapManager {
         }
     }
 
-    Init(textureMgr: TilesetManager) {
+    Init(tilesetMgr: TilesetManager) {
         this.MapInfo!.layers.forEach(layer => {
             const data = [...layer.data];   // splice will modify the original array -> create copy
 
@@ -43,7 +42,7 @@ export default class MapManager {
 
                 rowData.forEach((textureID, row) => {
                     if (textureID > 0) {
-                        const sprite = new PIXI.Sprite(textureMgr.Textures[textureID - 1]);
+                        const sprite = new PIXI.Sprite(tilesetMgr.Textures[textureID - 1]);
                         sprite.x = row * sprite.texture.width;
                         sprite.y = col * sprite.texture.height;
                         this.SpritesContainer.addChild(sprite);
