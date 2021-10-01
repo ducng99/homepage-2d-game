@@ -16,7 +16,7 @@ export default class TextureManager {
                     const textures = PIXI.Loader.shared.resources[jsonPath].textures;
 
                     if (textures) {
-                        // forEach is 50 times faster than for...in
+                        // forEach is 50 times faster than for...in ¯\_(ツ)_/¯
                         Object.values(textures).forEach(texture => {
                             texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
                             instance.Textures.push(texture);

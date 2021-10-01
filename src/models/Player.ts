@@ -1,7 +1,7 @@
 import Entity from './Entity'
 import Movable from './Movable'
-import { FrameTimeRatio } from '../utils/SpeedUtils'
 import { Mixin } from 'ts-mixer'
+import Renderer from '../views/Renderer';
 
 export enum PlayerState {
     Standing, Running, Jumping
@@ -17,11 +17,11 @@ export default class Player extends Mixin(Entity, Movable) {
     }
 
     Update(): void {
-        this.Position.MoveX(this.MoveSpeed * FrameTimeRatio());
+        this.Position.MoveX(this.MoveSpeed * Renderer.Instance.TimerDelta);
         if (this.JumpSpeed > 0 || this.Position.y < 700) {
             // Y-axis starts from top down so we will invert it.
             // TODO: Invert in view, not in model
-            this.Position.MoveY(-this.JumpSpeed * FrameTimeRatio());
+            this.Position.MoveY(-this.JumpSpeed * Renderer.Instance.TimerDelta);
         }
 
         if (this.JumpSpeed > Movable.GRAVITY_SPEED) {

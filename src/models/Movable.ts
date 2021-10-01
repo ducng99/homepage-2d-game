@@ -6,8 +6,8 @@ export enum Direction {
 
 export default class Movable {
     protected MAX_MOVE_SPEED = 10;
-    MAX_JUMP_SPEED = 20;
-    static readonly GRAVITY_SPEED = -9.81;   // Just for fun, but it works so...
+    MAX_JUMP_SPEED = 50;
+    static readonly GRAVITY_SPEED = -20;   // Just for fun, but it works so...
 
     private _moveController?: MoveController;
     private _moveSpeed = 0;

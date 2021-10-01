@@ -38,10 +38,9 @@ export default class GameBrain {
         this._player = new Player;
         this.EntitiesList.push(this._player);
         this._map = new GameMap;
-        setInterval(this.Update.bind(this), 1000 / 60);
     }
 
-    private Update() {
+    Update() {
         InputHandler.Instance.Handle();
         
         for (let i = 0; i < this.EntitiesList.length; i++) {

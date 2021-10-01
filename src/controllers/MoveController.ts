@@ -1,5 +1,5 @@
 import Movable from "../models/Movable";
-import { FrameTimeRatio } from '../utils/SpeedUtils'
+import Renderer from "../views/Renderer";
 
 export default class MoveController {
     private entity: Movable
@@ -10,12 +10,12 @@ export default class MoveController {
 
     MoveLeft() {
         if (this.entity.MoveSpeed > 0) this.entity.MoveSpeed = 0;
-        this.entity.MoveSpeed -= 1 * FrameTimeRatio();
+        this.entity.MoveSpeed -= 1 * Renderer.Instance.TimerDelta;
     }
 
     MoveRight() {
         if (this.entity.MoveSpeed < 0) this.entity.MoveSpeed = 0;
-        this.entity.MoveSpeed += 1 * FrameTimeRatio();
+        this.entity.MoveSpeed += 1 * Renderer.Instance.TimerDelta;
     }
     
     Jump() {
@@ -32,7 +32,7 @@ export default class MoveController {
             this.entity.MoveSpeed = 0;
         }
         else if (this.entity.MoveSpeed > 0.1 || this.entity.MoveSpeed < -0.1) {
-            this.entity.MoveSpeed -= this.entity.MoveSpeed / 3;
+            this.entity.MoveSpeed -= this.entity.MoveSpeed / 3 * Renderer.Instance.TimerDelta;
         }
     }
     
@@ -45,7 +45,7 @@ export default class MoveController {
             else {
                 let delta = Math.abs(this.entity.JumpSpeed) / 5;
                 if (this.entity.JumpSpeed - delta >= Movable.GRAVITY_SPEED)
-                    this.entity.JumpSpeed -= delta;
+                    this.entity.JumpSpeed -= delta * Renderer.Instance.TimerDelta;
                 else
                     this.entity.JumpSpeed = Movable.GRAVITY_SPEED;
             }
