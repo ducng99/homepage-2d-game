@@ -1,34 +1,18 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import Renderer from './views/Renderer'
-import InputHandler from './InputHandler'
 
 function App() {
     const [fps, setFPS] = useState(0);
 
     useEffect(() => {
+        // Init needs to be called after Renderer has been created. So we call it here.
         Renderer.Instance.Init();
 
         setInterval(() => {
             setFPS(Math.floor(Renderer.Instance.FPS * 10) / 10);
         }, 1000);
-
-        document.body.addEventListener('keydown', handleOnKeyDown);
-        document.body.addEventListener('keyup', handleOnKeyUp);
-
-        return () => {
-            document.body.removeEventListener('keydown', handleOnKeyDown);
-            document.body.removeEventListener('keyup', handleOnKeyUp);
-        }
     }, [])
-
-    function handleOnKeyDown(event: KeyboardEvent) {
-        InputHandler.Instance.OnKeyDown(event.key);
-    }
-
-    function handleOnKeyUp(event: KeyboardEvent) {
-        InputHandler.Instance.OnKeyUp(event.key);
-    }
 
     return (
         <div className="App">

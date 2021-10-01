@@ -2,7 +2,7 @@ import Entity from '../models/Entity'
 import * as PIXI from 'pixi.js'
 import AnimationsManager from './AnimationsManager'
 import Renderer from './Renderer';
-import ObservableBool from '../utils/ObservableBool'
+import ObservableObj from '../utils/ObservableObj'
 
 export default class EntityView {
     private _entity: Entity;
@@ -16,24 +16,25 @@ export default class EntityView {
     AnimationsManager?: AnimationsManager;
     Rotation = 0;
 
-    FlipX = new ObservableBool;
-    FlipY = new ObservableBool;
+    FlipX = new ObservableObj(false);
+    FlipY = new ObservableObj(false);
 
     private DefaultTexture?: PIXI.Texture<PIXI.Resource>;
     private CurrentSprite: PIXI.Sprite;
 
     private IsReady = false;
-    private Scale: number;
+    get Bounds() { 
+        const pos = this.Entity.Position;
+        return new PIXI.Rectangle(pos.x - this.CurrentSprite.width / 2, pos.y, this.CurrentSprite.width, this.CurrentSprite.height);
+    }
 
-    private constructor(entity: Entity, scale: number) {
+    private constructor(entity: Entity) {
         this._entity = entity;
         this._entity.View = this;
-        this.Scale = scale;
 
         this.CurrentSprite = new PIXI.Sprite;
         this.CurrentSprite.anchor.x = 0.5;
         this.CurrentSprite.position.set(this.Entity.Position.x, this.Entity.Position.y);
-        this.CurrentSprite.scale.set(this.Scale, this.Scale);
 
         this.FlipX.onChange(() => {
             this.CurrentSprite.scale.x *= -1;
@@ -45,8 +46,8 @@ export default class EntityView {
         Renderer.Instance.App.stage.addChild(this.CurrentSprite);
     }
 
-    static async Load(entity: Entity, jsonPath: string, scale = 1) {
-        const instance = new EntityView(entity, scale);
+    static async Load(entity: Entity, jsonPath: string) {
+        const instance = new EntityView(entity);
         const Loader = new PIXI.Loader;
 
         try {

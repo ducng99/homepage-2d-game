@@ -27,8 +27,6 @@ export default class GameBrain {
         return this._map;
     }
     
-    UpdateView?: Function;
-    
     private _entitiesList: Entity[] = [];
     get EntitiesList() {
         return this._entitiesList;
@@ -45,10 +43,6 @@ export default class GameBrain {
         
         for (let i = 0; i < this.EntitiesList.length; i++) {
             this.EntitiesList[i].Update();
-        }
-        
-        if (this.UpdateView) {
-            this.UpdateView();
         }
     }
 }
