@@ -17,16 +17,16 @@ export default class MoveController {
         if (this.entity.MoveSpeed < 0) this.entity.MoveSpeed = 0;
         this.entity.MoveSpeed += 1 * Renderer.Instance.TimerDelta;
     }
-    
+
     Jump() {
-        if (this.entity.JumpSpeed === Movable.GRAVITY_SPEED) {
+        if (this.entity.IsOnGround) {
             this.entity.JumpSpeed = this.entity.MAX_JUMP_SPEED;
             return true;
         }
-        
+
         return false;
     }
-    
+
     StopMove() {
         if (this.entity.MoveSpeed <= 0.1 && this.entity.MoveSpeed >= -0.1) {
             this.entity.MoveSpeed = 0;
@@ -35,10 +35,9 @@ export default class MoveController {
             this.entity.MoveSpeed -= this.entity.MoveSpeed / 3 * Renderer.Instance.TimerDelta;
         }
     }
-    
+
     StopJump() {
-        if (this.entity.JumpSpeed > Movable.GRAVITY_SPEED)
-        {
+        if (this.entity.JumpSpeed > Movable.GRAVITY_SPEED) {
             if (this.entity.JumpSpeed >= 0 && this.entity.JumpSpeed <= 1) {
                 this.entity.JumpSpeed -= 2;
             }

@@ -26,7 +26,7 @@ export default class GameBrain {
     get Map() {
         return this._map;
     }
-    
+
     private _entitiesList: Entity[] = [];
     get EntitiesList() {
         return this._entitiesList;
@@ -40,7 +40,7 @@ export default class GameBrain {
 
     Update() {
         InputHandler.Instance.Handle();
-        
+
         for (let i = 0; i < this.EntitiesList.length; i++) {
             this.EntitiesList[i].Update();
         }

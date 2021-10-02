@@ -1,5 +1,5 @@
 import Entity from '../models/Entity'
-import * as PIXI from 'pixi.js'
+import { Texture, Resource, Sprite, Loader as PIXILoader, SCALE_MODES } from 'pixi.js'
 import AnimationsManager from './AnimationsManager'
 import Renderer from './Renderer';
 import ObservableObj from '../utils/ObservableObj'
@@ -8,7 +8,7 @@ export default class EntityView {
     private _entity: Entity;
     get Entity() { return this._entity }
 
-    private _textures: PIXI.Texture<PIXI.Resource>[] = [];
+    private _textures: Texture<Resource>[] = [];
     get Textures() {
         return this._textures;
     }
@@ -19,20 +19,19 @@ export default class EntityView {
     FlipX = new ObservableObj(false);
     FlipY = new ObservableObj(false);
 
-    private DefaultTexture?: PIXI.Texture<PIXI.Resource>;
-    private CurrentSprite: PIXI.Sprite;
+    private DefaultTexture?: Texture<Resource>;
+    private CurrentSprite: Sprite;
 
     private IsReady = false;
-    get Bounds() { 
-        const pos = this.Entity.Position;
-        return new PIXI.Rectangle(pos.x - this.CurrentSprite.width / 2, pos.y, this.CurrentSprite.width, this.CurrentSprite.height);
+    get Size() {
+        return { width: this.CurrentSprite.width, height: this.CurrentSprite.height };
     }
 
     private constructor(entity: Entity) {
         this._entity = entity;
         this._entity.View = this;
 
-        this.CurrentSprite = new PIXI.Sprite;
+        this.CurrentSprite = new Sprite;
         this.CurrentSprite.anchor.x = 0.5;
         this.CurrentSprite.position.set(this.Entity.Position.x, this.Entity.Position.y);
 
@@ -43,12 +42,12 @@ export default class EntityView {
             this.CurrentSprite.scale.y *= -1;
         });
 
-        Renderer.Instance.App.stage.addChild(this.CurrentSprite);
+        Renderer.Instance.MainContainer.addChild(this.CurrentSprite);
     }
 
     static async Load(entity: Entity, jsonPath: string) {
         const instance = new EntityView(entity);
-        const Loader = new PIXI.Loader;
+        const Loader = new PIXILoader;
 
         try {
             await new Promise(resolve => {
@@ -58,7 +57,7 @@ export default class EntityView {
 
                     if (textures) {
                         Object.values(textures).forEach(texture => {
-                            texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+                            texture.baseTexture.scaleMode = SCALE_MODES.NEAREST;
 
                             // Init first sprite
                             if (!instance.DefaultTexture) {

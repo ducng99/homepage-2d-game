@@ -6,12 +6,12 @@ export default abstract class Entity {
     get Position() {
         return this._position;
     }
-    
+
     View?: EntityView;
 
     constructor() {
         this._position = new Vector2(10, 10);
     }
-    
+
     abstract Update(): void;
 }

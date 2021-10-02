@@ -1,6 +1,6 @@
 import { MapStruct } from './MapStruct'
 import TilesetManager from './TilesetManager'
-import * as PIXI from 'pixi.js'
+import { ParticleContainer, Sprite } from 'pixi.js'
 import MapBlock from '../../models/MapBlock';
 
 export default class MapManager {
@@ -16,7 +16,7 @@ export default class MapManager {
         return (this.MapInfo?.width ?? 0) * (this.MapInfo?.tilewidth ?? 0);
     }
 
-    private _spritesContainer: PIXI.ParticleContainer = new PIXI.ParticleContainer(1500, {});
+    private _spritesContainer: ParticleContainer = new ParticleContainer(1500, {});
     get SpritesContainer() { return this._spritesContainer }
 
     static async Load(jsonPath: string) {
@@ -36,7 +36,7 @@ export default class MapManager {
 
     Init(tilesetMgr: TilesetManager) {
         const mapBlocks: MapBlock[] = [];
-        
+
         this.MapInfo!.layers.forEach(layer => {
             const data = [...layer.data];   // splice will modify the original array -> create copy
 
@@ -46,18 +46,18 @@ export default class MapManager {
                 rowData.forEach((textureID, col) => {
                     const block = new MapBlock;
                     if (textureID > 0) {
-                        const sprite = new PIXI.Sprite(tilesetMgr.Textures[textureID - 1]);
+                        const sprite = new Sprite(tilesetMgr.Textures[textureID - 1]);
                         sprite.x = col * sprite.texture.width;
                         sprite.y = row * sprite.texture.height;
                         this.SpritesContainer.addChild(sprite);
-                        
+
                         block.Sprite = sprite;
                     }
                     mapBlocks.push(block);
                 });
             }
         });
-        
+
         return mapBlocks;
     }
 }
