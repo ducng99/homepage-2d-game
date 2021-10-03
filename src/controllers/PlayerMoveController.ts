@@ -20,7 +20,7 @@ export default class PlayerMoveController extends MoveController {
     }
 
     StopVertical() {
-        if (this.player.VerticalSpeed > this.player.MaxDownSpeed) {
+        if (!this.player.IsOnGround) {
             if (this.player.VerticalSpeed >= 0 && this.player.VerticalSpeed <= 1) {
                 this.player.VerticalSpeed -= 2;
             }
@@ -31,6 +31,9 @@ export default class PlayerMoveController extends MoveController {
                 else
                     this.player.VerticalSpeed = this.player.MaxDownSpeed;
             }
+        }
+        else {
+            this.player.VerticalSpeed = 0;
         }
     }
 }
