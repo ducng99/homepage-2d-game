@@ -2,10 +2,9 @@ import Entity from './Entity'
 import Movable, { Direction } from './extensions/Movable'
 import Collidable from './extensions/Collidable'
 import { Mixin } from 'ts-mixer'
-import Renderer from '../views/Renderer';
-import { Rectangle } from 'pixi.js';
-import GameBrain from './GameBrain';
-import MapBlock from './MapBlock';
+import Renderer from '../views/Renderer'
+import * as PIXI from 'pixi.js'
+import GameBrain from './GameBrain'
 
 export enum PlayerState {
     Standing, Running, Jumping
@@ -29,14 +28,27 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
 
     get Bounds() {
         const width = this.View?.Size.width ?? 0;
-        return new Rectangle(this.Position.x - width / 2, this.Position.y, width, this.View?.Size.height ?? 0);
+        // Player view's X is anchored to center
+        return new PIXI.Rectangle(this.Position.x - width / 2, this.Position.y, width, this.View?.Size.height ?? 0);
     }
 
     Update() {
+        // Update player view to flip to the right direction
         if (this.View) {
             this.View.FlipX.Value = this.Direction === Direction.Left;
         }
 
+        // Check collision and move the player
+        this.UpdatePosition();
+
+        // Update player state
+        this.UpdateState();
+        
+        // Update animations
+        this.UpdateAnimation();
+    }
+    
+    UpdatePosition() {
         let tmpInfo = {
             nextDistance: 0,
             optimal: 0
@@ -65,17 +77,34 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
             this.Position.MoveY(-this.JumpSpeed * Renderer.Instance.TimerDelta);
             this._isOnGround = false;
         }
+    }
 
+    UpdateState() {
         if (!this.IsOnGround) {
             this.State = PlayerState.Jumping;
         }
         else if (this.MoveSpeed === 0) {
             this.State = PlayerState.Standing;
-            this.View?.AnimationsManager?.StopAnimation();
         }
         else {
             this.State = PlayerState.Running;
-            this.View?.AnimationsManager?.PlayAnimation('player-walk');
+            
+        }
+    }
+
+    UpdateAnimation() {
+        if (this.View && this.View.AnimationsManager) {
+            switch (this.State) {
+                case PlayerState.Standing:
+                    this.View.AnimationsManager.StopAnimation();
+                    break;
+                case PlayerState.Running:
+                    this.View.AnimationsManager.PlayAnimation('player-walk');
+                    break;
+                case PlayerState.Jumping:
+                    this.View.AnimationsManager.PlayAnimation('player-jump');
+                    break;
+            }
         }
     }
 
@@ -88,12 +117,12 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
      */
     IsCollidingTerrain(direction: BoxDirection, info: { nextDistance: number, optimal: number }) {
         const entityBounds = this.Bounds;
-        const MapManager = GameBrain.Instance.Map.MapManager;
-        const TerrainBlocks = GameBrain.Instance.Map.TerrainBlocks;
+        const GameMap = GameBrain.Instance.MapManager.GameMap;
+        const TerrainBlocks = GameBrain.Instance.MapManager.TerrainBlocks;
 
-        if (MapManager && MapManager.MapInfo) {
-            const tileHeight = MapManager.MapInfo.tileheight;
-            const tileWidth = MapManager.MapInfo.tilewidth;
+        if (GameMap && GameMap.MapInfo) {
+            const tileHeight = GameMap.MapInfo.tileheight;
+            const tileWidth = GameMap.MapInfo.tilewidth;
 
             let topRow, bottomRow, leftCol, rightCol;
 
@@ -105,7 +134,7 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
                     rightCol = Math.floor((entityBounds.right - 0.1) / tileWidth);
 
                     for (let i = topRowMax; i >= topRowMin; i--) {
-                        const row = TerrainBlocks.slice(MapManager.MapInfo.width * i + leftCol, MapManager.MapInfo.width * i + rightCol + 1);
+                        const row = TerrainBlocks.slice(GameMap.MapInfo.width * i + leftCol, GameMap.MapInfo.width * i + rightCol + 1);
 
                         for (let n = 0; n < row.length; n++) {
                             if (row[n].IsValid) {
@@ -120,10 +149,10 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
                     let bottomRowMax = Math.floor((entityBounds.bottom + info.nextDistance % tileHeight) / tileHeight);
                     leftCol = Math.floor((entityBounds.left + 0.1) / tileWidth);
                     rightCol = Math.floor((entityBounds.right - 0.1) / tileWidth);
-                    
+
                     for (let i = bottomRowMin; i <= bottomRowMax; i++) {
-                        const row = TerrainBlocks.slice(MapManager.MapInfo.width * i + leftCol, MapManager.MapInfo.width * i + rightCol + 1);
-                        
+                        const row = TerrainBlocks.slice(GameMap.MapInfo.width * i + leftCol, GameMap.MapInfo.width * i + rightCol + 1);
+
                         for (let n = 0; n < row.length; n++) {
                             if (row[n].IsValid) {
                                 info.optimal = row[n].Bounds.top - entityBounds.height;
@@ -139,7 +168,7 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
                     let leftColMax = Math.floor((entityBounds.left + info.nextDistance % tileWidth) / tileWidth);
 
                     for (let i = topRow; i < bottomRow; i++) {
-                        const blocks = TerrainBlocks.slice(MapManager.MapInfo.width * i + leftColMax, MapManager.MapInfo.width * i + leftColMin + 1);
+                        const blocks = TerrainBlocks.slice(GameMap.MapInfo.width * i + leftColMax, GameMap.MapInfo.width * i + leftColMin + 1);
                         for (let n = blocks.length - 1; n >= 0; n--) {
                             const block = blocks[n];
                             if (block && block.IsValid) {
@@ -156,7 +185,7 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
                     let rightColMax = Math.floor((entityBounds.right + info.nextDistance % tileWidth) / tileWidth);
 
                     for (let i = topRow; i < bottomRow; i++) {
-                        const blocks = TerrainBlocks.slice(MapManager.MapInfo.width * i + rightColMin, MapManager.MapInfo.width * i + rightColMax + 1);
+                        const blocks = TerrainBlocks.slice(GameMap.MapInfo.width * i + rightColMin, GameMap.MapInfo.width * i + rightColMax + 1);
                         for (let n = 0; n < blocks.length; n++) {
                             const block = blocks[n];
                             if (block && block.IsValid) {

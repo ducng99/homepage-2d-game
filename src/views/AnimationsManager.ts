@@ -1,11 +1,11 @@
-import { utils as PIXIUtils, Texture, Resource } from 'pixi.js'
+import * as PIXI from 'pixi.js'
 import Renderer from './Renderer';
 
 export default class AnimationManager {
-    private Animations: PIXIUtils.Dict<Texture<Resource>[]>;
+    private Animations: PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>[]>;
 
     private PlayingAnimationName = "";
-    private PlayingAnimation?: Texture<Resource>[];
+    private PlayingAnimation?: PIXI.Texture<PIXI.Resource>[];
     private CurrentTextureInd = -1;
     get CurrentTexture() {
         return this.PlayingAnimation && this.PlayingAnimation.length > 0 && this.CurrentTextureInd >= 0
@@ -16,7 +16,7 @@ export default class AnimationManager {
     private AnimationDelay = 100;
     private lastTick = 0;
 
-    constructor(animations: PIXIUtils.Dict<Texture<Resource>[]>) {
+    constructor(animations: PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>[]>) {
         this.Animations = animations;
     }
 

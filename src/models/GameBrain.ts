@@ -1,7 +1,7 @@
-import InputHandler from "../InputHandler";
-import GameMap from "./Map";
-import Player from "./Player";
-import Entity from "./Entity";
+import InputHandler from "../InputHandler"
+import MapManager from "./maps/MapManager"
+import Player from "./Player"
+import Entity from "./Entity"
 
 export default class GameBrain {
     private static _instance?: GameBrain;
@@ -22,9 +22,9 @@ export default class GameBrain {
         return this._player;
     }
 
-    private _map: GameMap;
-    get Map() {
-        return this._map;
+    private _mapManager: MapManager;
+    get MapManager() {
+        return this._mapManager;
     }
 
     private _entitiesList: Entity[] = [];
@@ -35,7 +35,7 @@ export default class GameBrain {
     private constructor() {
         this._player = new Player;
         this.EntitiesList.push(this._player);
-        this._map = new GameMap;
+        this._mapManager = new MapManager;
     }
 
     Update() {

@@ -1,5 +1,5 @@
 import Entity from '../models/Entity'
-import { Texture, Resource, Sprite, Loader as PIXILoader, SCALE_MODES } from 'pixi.js'
+import * as PIXI from 'pixi.js'
 import AnimationsManager from './AnimationsManager'
 import Renderer from './Renderer';
 import ObservableObj from '../utils/ObservableObj'
@@ -8,7 +8,7 @@ export default class EntityView {
     private _entity: Entity;
     get Entity() { return this._entity }
 
-    private _textures: Texture<Resource>[] = [];
+    private _textures: PIXI.Texture<PIXI.Resource>[] = [];
     get Textures() {
         return this._textures;
     }
@@ -19,8 +19,8 @@ export default class EntityView {
     FlipX = new ObservableObj(false);
     FlipY = new ObservableObj(false);
 
-    private DefaultTexture?: Texture<Resource>;
-    private CurrentSprite: Sprite;
+    private DefaultTexture?: PIXI.Texture<PIXI.Resource>;
+    private CurrentSprite: PIXI.Sprite;
 
     private IsReady = false;
     get Size() {
@@ -31,7 +31,7 @@ export default class EntityView {
         this._entity = entity;
         this._entity.View = this;
 
-        this.CurrentSprite = new Sprite;
+        this.CurrentSprite = new PIXI.Sprite;
         this.CurrentSprite.anchor.x = 0.5;
         this.CurrentSprite.position.set(this.Entity.Position.x, this.Entity.Position.y);
 
@@ -47,7 +47,7 @@ export default class EntityView {
 
     static async Load(entity: Entity, jsonPath: string) {
         const instance = new EntityView(entity);
-        const Loader = new PIXILoader;
+        const Loader = new PIXI.Loader;
 
         try {
             await new Promise(resolve => {
@@ -57,7 +57,7 @@ export default class EntityView {
 
                     if (textures) {
                         Object.values(textures).forEach(texture => {
-                            texture.baseTexture.scaleMode = SCALE_MODES.NEAREST;
+                            texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
 
                             // Init first sprite
                             if (!instance.DefaultTexture) {

@@ -1,7 +1,8 @@
-import { Application, Container } from 'pixi.js';
+import * as PIXI from 'pixi.js';
 import EntityView from './EntityView'
 import GameBrain from '../models/GameBrain';
 import InputHandler from '../InputHandler';
+import Camera from './Camera'
 
 export default class Renderer {
     private static _instance?: Renderer;
@@ -13,25 +14,21 @@ export default class Renderer {
         return this._instance;
     }
 
-    readonly App: Application;
+    readonly App: PIXI.Application;
     get FPS() { return this.App.ticker.FPS }
 
     private _timerDelta = 0;
     get TimerDelta() { return this._timerDelta }
 
-    private Scale = 3;
-
-    private _mainContainer: Container = new Container;
-    get MainContainer() { return this._mainContainer }
+    readonly MainContainer: PIXI.Container = new PIXI.Container;
 
     private EntityViews: EntityView[] = [];
 
     private constructor() {
-        this.App = new Application();
+        this.App = new PIXI.Application();
         this.App.renderer.view.style.position = "absolute";
         this.App.renderer.view.style.display = "block";
         this.App.resizeTo = window;
-        this.MainContainer.scale.set(this.Scale);
         this.App.stage.addChild(this.MainContainer);
 
         this.App.view.setAttribute('tabindex', '1');
@@ -44,7 +41,7 @@ export default class Renderer {
     }
 
     async Init() {
-        this.App.stage.addChildAt(GameBrain.Instance.Map.BackgroundSprite, 0);
+        this.App.stage.addChildAt(GameBrain.Instance.MapManager.BackgroundSprite, 0);
 
         const playerView = await EntityView.Load(GameBrain.Instance.Player, '/assets/entities/player.json');
         this.EntityViews.push(playerView);
@@ -57,6 +54,7 @@ export default class Renderer {
     }
 
     private Update() {
+        Camera.Instance.Update();
         GameBrain.Instance.Update();
 
         this.EntityViews.forEach(view => {

@@ -1,4 +1,4 @@
-import { Rectangle } from 'pixi.js';
+import * as PIXI from 'pixi.js';
 import CollisionController from '../../controllers/CollisionController'
 
 export default abstract class Collidable {
@@ -12,5 +12,5 @@ export default abstract class Collidable {
         return this._collisionController;
     }
 
-    abstract get Bounds(): Rectangle;
+    abstract get Bounds(): PIXI.Rectangle;
 }

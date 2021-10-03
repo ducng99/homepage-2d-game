@@ -10,7 +10,7 @@ export default abstract class Entity {
     View?: EntityView;
 
     constructor() {
-        this._position = new Vector2(10, 10);
+        this._position = new Vector2();
     }
 
     abstract Update(): void;
