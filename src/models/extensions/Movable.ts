@@ -5,29 +5,30 @@ export enum Direction {
 }
 
 export default abstract class Movable {
-    private maxMoveSpeed = 10;
-    get MaxMoveSpeed() {
-        return this.maxMoveSpeed;
+    private _maxHorizontalSpeed = 10;
+    get MaxHorizontalSpeed() {
+        return this._maxHorizontalSpeed;
     }
-    protected set MaxMoveSpeed(value) {
-        this.maxMoveSpeed = value;
-    }
-    
-    private _maxJumpSpeed = 10;
-    get MaxJumpSpeed() { return this._maxJumpSpeed}
-    set MaxJumpSpeed(value) {
-        this._maxJumpSpeed = value;
+    protected set MaxHorizontalSpeed(value) {
+        this._maxHorizontalSpeed = value;
     }
     
-    static GRAVITY_SPEED = -10;
+    private _maxUpSpeed = 10;
+    get MaxUpSpeed() { return this._maxUpSpeed}
+    protected set MaxUpSpeed(value) {
+        this._maxUpSpeed = value;
+    }
+    
+    private _maxDownSpeed = -10;
+    get MaxDownSpeed() { return this._maxDownSpeed }
+    protected set MaxDownSpeed(value) {
+        this._maxDownSpeed = value;
+    }
 
     private _moveController?: MoveController;
-    private _moveSpeed = 0;
-    private _jumpSpeed = Movable.GRAVITY_SPEED;
+    private _horizontalSpeed = 0;
+    private _verticalSpeed = 0;
     private _direction = Direction.Right;
-
-    protected _isOnGround = false;
-    get IsOnGround() { return this._isOnGround }
 
     get MoveController() {
         if (!this._moveController) {
@@ -36,14 +37,24 @@ export default abstract class Movable {
 
         return this._moveController;
     }
-
-    get MoveSpeed() {
-        return this._moveSpeed;
+    
+    protected set MoveController(value) {
+        this._moveController = value;
     }
 
-    set MoveSpeed(value) {
-        if (value <= this.MaxMoveSpeed && value >= -this.MaxMoveSpeed) {
-            this._moveSpeed = value;
+    get HorizontalSpeed() {
+        return this._horizontalSpeed;
+    }
+
+    set HorizontalSpeed(value) {
+        if (value > this._maxHorizontalSpeed) {
+            this._horizontalSpeed = this._maxHorizontalSpeed;
+        }
+        else if (value < -this._maxHorizontalSpeed) {
+            this._horizontalSpeed = -this.MaxHorizontalSpeed;
+        }
+        else {
+            this._horizontalSpeed = value;
             if (value > 0) {
                 this._direction = Direction.Right;
             }
@@ -53,17 +64,27 @@ export default abstract class Movable {
         }
     }
 
-    get JumpSpeed() {
-        return this._jumpSpeed;
+    get VerticalSpeed() {
+        return this._verticalSpeed;
     }
 
-    set JumpSpeed(value) {
-        if (value >= Movable.GRAVITY_SPEED && value <= this.MaxJumpSpeed) {
-            this._jumpSpeed = value;
+    set VerticalSpeed(value) {
+        if (value > this.MaxUpSpeed) {
+            this._verticalSpeed = this.MaxUpSpeed;
+        }
+        else if (value < this.MaxDownSpeed) {
+            this._verticalSpeed = this.MaxDownSpeed;
+        }
+        else {
+            this._verticalSpeed = value;
         }
     }
 
     get Direction() {
         return this._direction;
+    }
+    
+    protected set Direction(value) {
+        this._direction = value;
     }
 }

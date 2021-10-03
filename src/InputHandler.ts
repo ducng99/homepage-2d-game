@@ -1,3 +1,4 @@
+import PlayerMoveController from "./controllers/PlayerMoveController";
 import GameBrain from "./models/GameBrain";
 
 export default class InputHandler {
@@ -29,26 +30,28 @@ export default class InputHandler {
         let playerMoved = false;
         let playerJumped = false;
         
+        const playerMoveController = GameBrain.Instance.Player.MoveController as PlayerMoveController;
+        
         for (let i = 0; i < this.KeysDown.length; i++) {
             switch (this.KeysDown[i]) {
                 case "ArrowLeft":
-                    GameBrain.Instance.Player.MoveController.MoveLeft();
+                    playerMoveController.MoveLeft();
                     playerMoved = true;
                     break;
                 case "ArrowRight":
-                    GameBrain.Instance.Player.MoveController.MoveRight();
+                    playerMoveController.MoveRight();
                     playerMoved = true;
                     break;
                 case "Space":
                 case " ":
-                    playerJumped = GameBrain.Instance.Player.MoveController.Jump();
+                    playerJumped = playerMoveController.Jump();
                     break;
                 default:
                     break;
             }
         }
         
-        if (!playerMoved) GameBrain.Instance.Player.MoveController.StopMove();
-        if (!playerJumped) GameBrain.Instance.Player.MoveController.StopJump();
+        if (!playerMoved) playerMoveController.StopHorizontal();
+        if (!playerJumped) playerMoveController.StopVertical();
     }
 }

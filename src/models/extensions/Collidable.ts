@@ -11,6 +11,9 @@ export default abstract class Collidable {
 
         return this._collisionController;
     }
+    
+    protected _isOnGround = false;
+    get IsOnGround() { return this._isOnGround }
 
     abstract get Bounds(): PIXI.Rectangle;
 }

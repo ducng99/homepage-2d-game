@@ -5,6 +5,7 @@ import { Mixin } from 'ts-mixer'
 import Renderer from '../views/Renderer'
 import * as PIXI from 'pixi.js'
 import GameBrain from './GameBrain'
+import PlayerMoveController from '../controllers/PlayerMoveController'
 
 export enum PlayerState {
     Standing, Running, Jumping
@@ -20,9 +21,10 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
     constructor() {
         super();
         this.State = PlayerState.Standing;
-        this.MaxMoveSpeed = 4;
-        this.MaxJumpSpeed = 15;
+        this.MaxHorizontalSpeed = 4;
+        this.MaxUpSpeed = 15;
         this.Position.x = 100;
+        this.MoveController = new PlayerMoveController(this);
     }
 
     get Bounds() {
@@ -53,27 +55,27 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
             optimal: 0
         };
 
-        tmpInfo.nextDistance = this.MoveSpeed * Renderer.Instance.TimerDelta;
-        if ((this.MoveSpeed < 0 && this.IsCollidingTerrain(BoxDirection.Left, tmpInfo)) || (this.MoveSpeed > 0 && this.IsCollidingTerrain(BoxDirection.Right, tmpInfo))) {
+        tmpInfo.nextDistance = this.HorizontalSpeed * Renderer.Instance.TimerDelta;
+        if ((this.HorizontalSpeed < 0 && this.IsCollidingTerrain(BoxDirection.Left, tmpInfo)) || (this.HorizontalSpeed > 0 && this.IsCollidingTerrain(BoxDirection.Right, tmpInfo))) {
             this.Position.x = tmpInfo.optimal;
         }
         else {
-            this.Position.MoveX(this.MoveSpeed * Renderer.Instance.TimerDelta);
+            this.Position.MoveX(this.HorizontalSpeed * Renderer.Instance.TimerDelta);
         }
 
-        tmpInfo.nextDistance = -this.JumpSpeed * Renderer.Instance.TimerDelta;
-        if ((this.JumpSpeed < 0 && this.IsCollidingTerrain(BoxDirection.Bottom, tmpInfo)) || (this.JumpSpeed > 0 && this.IsCollidingTerrain(BoxDirection.Top, tmpInfo))) {
-            if (this.JumpSpeed < 0) {
+        tmpInfo.nextDistance = -this.VerticalSpeed * Renderer.Instance.TimerDelta;
+        if ((this.VerticalSpeed < 0 && this.IsCollidingTerrain(BoxDirection.Bottom, tmpInfo)) || (this.VerticalSpeed > 0 && this.IsCollidingTerrain(BoxDirection.Top, tmpInfo))) {
+            if (this.VerticalSpeed < 0) {
                 this._isOnGround = true;
             }
             else {
-                this.JumpSpeed = 0;
+                this.VerticalSpeed = 0;
                 this._isOnGround = false;
             }
             this.Position.y = tmpInfo.optimal;
         }
         else {
-            this.Position.MoveY(-this.JumpSpeed * Renderer.Instance.TimerDelta);
+            this.Position.MoveY(-this.VerticalSpeed * Renderer.Instance.TimerDelta);
             this._isOnGround = false;
         }
     }
@@ -82,7 +84,7 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
         if (!this.IsOnGround) {
             this.State = PlayerState.Jumping;
         }
-        else if (this.MoveSpeed === 0) {
+        else if (this.HorizontalSpeed === 0) {
             this.State = PlayerState.Standing;
         }
         else {
