@@ -20,10 +20,9 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
     constructor() {
         super();
         this.State = PlayerState.Standing;
-        this.MAX_MOVE_SPEED = 4;
-        this.MAX_JUMP_SPEED = 15;
+        this.MaxMoveSpeed = 4;
+        this.MaxJumpSpeed = 15;
         this.Position.x = 100;
-        this.Position.y = 0;
     }
 
     get Bounds() {
@@ -48,7 +47,7 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
         this.UpdateAnimation();
     }
     
-    UpdatePosition() {
+    private UpdatePosition() {
         let tmpInfo = {
             nextDistance: 0,
             optimal: 0
@@ -79,7 +78,7 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
         }
     }
 
-    UpdateState() {
+    private UpdateState() {
         if (!this.IsOnGround) {
             this.State = PlayerState.Jumping;
         }
@@ -92,7 +91,7 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
         }
     }
 
-    UpdateAnimation() {
+    private UpdateAnimation() {
         if (this.View && this.View.AnimationsManager) {
             switch (this.State) {
                 case PlayerState.Standing:

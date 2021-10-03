@@ -20,7 +20,7 @@ export default class MoveController {
 
     Jump() {
         if (this.entity.IsOnGround) {
-            this.entity.JumpSpeed = this.entity.MAX_JUMP_SPEED;
+            this.entity.JumpSpeed = this.entity.MaxJumpSpeed;
             return true;
         }
 

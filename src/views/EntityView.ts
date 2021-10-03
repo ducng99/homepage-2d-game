@@ -2,7 +2,7 @@ import Entity from '../models/Entity'
 import * as PIXI from 'pixi.js'
 import AnimationsManager from './AnimationsManager'
 import Renderer from './Renderer';
-import ObservableObj from '../utils/ObservableObj'
+import Observable from '../utils/Observable'
 
 export default class EntityView {
     private _entity: Entity;
@@ -16,11 +16,11 @@ export default class EntityView {
     AnimationsManager?: AnimationsManager;
     Rotation = 0;
 
-    FlipX = new ObservableObj(false);
-    FlipY = new ObservableObj(false);
+    FlipX = new Observable(false);
+    FlipY = new Observable(false);
 
     private DefaultTexture?: PIXI.Texture<PIXI.Resource>;
-    private CurrentSprite: PIXI.Sprite;
+    private readonly CurrentSprite: PIXI.Sprite;
 
     private IsReady = false;
     get Size() {

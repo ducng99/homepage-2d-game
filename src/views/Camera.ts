@@ -14,8 +14,7 @@ export default class Camera extends Entity {
 
     Scale = 3;
     PlayerOffset = 0.45;
-    DirectionChangeOffset = 0.25;
-
+    DirectionChangeOffset = 0.3;
     private Direction = GameBrain.Instance.Player.Direction;
 
     constructor() {
@@ -36,19 +35,21 @@ export default class Camera extends Entity {
 
         // Update camera position
         if (this.Direction === Direction.Right) {
-            if (playerPositionX < -this.Position.x + offsetDirChangePosition) {
+            if (player.Direction === Direction.Left && playerPositionX < -this.Position.x + offsetDirChangePosition) {
                 this.Direction = Direction.Left;
             }
             else if (playerPositionX > -this.Position.x + offsetPosition) {
-                this.Position.x = -playerPositionX + offsetPosition;
+                const delta = (playerPositionX - offsetPosition + this.Position.x) / 10 * Renderer.Instance.TimerDelta;
+                this.Position.x -= delta;
             }
         }
         else {
-            if (playerPositionX > -this.Position.x + offsetDirChangeRightPosition) {
+            if (player.Direction === Direction.Right && playerPositionX > -this.Position.x + offsetDirChangeRightPosition) {
                 this.Direction = Direction.Right;
             }
             else if (playerPositionX < -this.Position.x + offsetRightPosition) {
-                this.Position.x = -playerPositionX + offsetRightPosition;
+                const delta = (playerPositionX - offsetRightPosition + this.Position.x) / 10 * Renderer.Instance.TimerDelta;
+                this.Position.x -= delta;
             }
         }
 

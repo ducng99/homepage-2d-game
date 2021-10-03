@@ -5,9 +5,21 @@ export enum Direction {
 }
 
 export default abstract class Movable {
-    protected MAX_MOVE_SPEED = 10;
-    MAX_JUMP_SPEED = 10;
-    static readonly GRAVITY_SPEED = -10;
+    private maxMoveSpeed = 10;
+    get MaxMoveSpeed() {
+        return this.maxMoveSpeed;
+    }
+    protected set MaxMoveSpeed(value) {
+        this.maxMoveSpeed = value;
+    }
+    
+    private _maxJumpSpeed = 10;
+    get MaxJumpSpeed() { return this._maxJumpSpeed}
+    set MaxJumpSpeed(value) {
+        this._maxJumpSpeed = value;
+    }
+    
+    static GRAVITY_SPEED = -10;
 
     private _moveController?: MoveController;
     private _moveSpeed = 0;
@@ -30,7 +42,7 @@ export default abstract class Movable {
     }
 
     set MoveSpeed(value) {
-        if (value <= this.MAX_MOVE_SPEED && value >= -this.MAX_MOVE_SPEED) {
+        if (value <= this.MaxMoveSpeed && value >= -this.MaxMoveSpeed) {
             this._moveSpeed = value;
             if (value > 0) {
                 this._direction = Direction.Right;
@@ -46,7 +58,7 @@ export default abstract class Movable {
     }
 
     set JumpSpeed(value) {
-        if (value >= Movable.GRAVITY_SPEED && value <= this.MAX_JUMP_SPEED) {
+        if (value >= Movable.GRAVITY_SPEED && value <= this.MaxJumpSpeed) {
             this._jumpSpeed = value;
         }
     }
