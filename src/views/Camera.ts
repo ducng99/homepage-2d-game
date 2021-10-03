@@ -61,6 +61,9 @@ export default class Camera extends Entity {
         else if (this.Position.x < minX) {
             this.Position.x = minX;
         }
+        
+        // Match center in the view
+        this.Position.y = -(GameBrain.Instance.MapManager.Height * container.scale.y - Renderer.Instance.App.screen.height) / 2;
 
         // Update main container
         container.scale.set(this.Scale);

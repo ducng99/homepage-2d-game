@@ -32,8 +32,5 @@ export default class MapManager {
         this._terrainBlocks = this._gameMap.Init(tileset_mgr);
 
         Renderer.Instance.MainContainer.addChildAt(this._gameMap.SpritesContainer, 1);
-
-        // Match center in the view
-        Camera.Instance.Position.y -= (this._gameMap.Height * Renderer.Instance.MainContainer.scale.y - Renderer.Instance.App.screen.height) / 2;
     }
 }
