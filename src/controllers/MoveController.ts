@@ -3,7 +3,7 @@ import Renderer from "../views/Renderer";
 
 export default class MoveController {
     private entity: Movable
-
+    
     /**
      * How fast speed start until reaches max.
      * The higher the slower. 1 is instant
@@ -29,50 +29,26 @@ export default class MoveController {
 
     MoveLeft() {
         if (this.entity.HorizontalSpeed > 0) this.entity.HorizontalSpeed = 0;
-
-        let gradSpeed = this.entity.HorizontalSpeed / this.EaseInSpeed;
-        gradSpeed = (gradSpeed === 0 ? -1 : gradSpeed) * Renderer.Instance.TimerDelta;
-        if (gradSpeed < -this.entity.MaxHorizontalSpeed) {
-            gradSpeed = -this.entity.MaxHorizontalSpeed;
-        }
-
-        this.entity.HorizontalSpeed += gradSpeed;
+        const gradSpeed = this.entity.HorizontalSpeed / this.EaseInSpeed;
+        this.entity.HorizontalSpeed += (gradSpeed === 0 ? -1 : gradSpeed) * Renderer.Instance.TimerDelta;
     }
 
     MoveRight() {
         if (this.entity.HorizontalSpeed < 0) this.entity.HorizontalSpeed = 0;
-
-        let gradSpeed = this.entity.HorizontalSpeed / this.EaseInSpeed;
-        gradSpeed = (gradSpeed === 0 ? 1 : gradSpeed) * Renderer.Instance.TimerDelta;
-        if (gradSpeed > this.entity.MaxHorizontalSpeed) {
-            gradSpeed = this.entity.MaxHorizontalSpeed;
-        }
-
-        this.entity.HorizontalSpeed += gradSpeed;
+        const gradSpeed = this.entity.HorizontalSpeed / this.EaseInSpeed;
+        this.entity.HorizontalSpeed += (gradSpeed === 0 ? 1 : gradSpeed) * Renderer.Instance.TimerDelta;
     }
-
+    
     MoveUp() {
         if (this.entity.VerticalSpeed < 0) this.entity.VerticalSpeed = 0;
-
-        let gradSpeed = this.entity.VerticalSpeed / this.EaseInSpeed;
-        gradSpeed = (gradSpeed === 0 ? 1 : gradSpeed) * Renderer.Instance.TimerDelta;
-        if (gradSpeed > this.entity.MaxUpSpeed) {
-            gradSpeed = this.entity.MaxUpSpeed;
-        }
-
-        this.entity.VerticalSpeed += gradSpeed;
+        const gradSpeed = this.entity.VerticalSpeed / this.EaseInSpeed;
+        this.entity.VerticalSpeed += (gradSpeed === 0 ? 1 : gradSpeed) * Renderer.Instance.TimerDelta;
     }
-
+    
     MoveDown() {
         if (this.entity.VerticalSpeed > 0) this.entity.VerticalSpeed = 0;
-
-        let gradSpeed = this.entity.VerticalSpeed / this.EaseInSpeed;
-        gradSpeed = (gradSpeed === 0 ? -1 : gradSpeed) * Renderer.Instance.TimerDelta;
-        if (gradSpeed < this.entity.MaxDownSpeed) {
-            gradSpeed = this.entity.MaxDownSpeed;
-        }
-
-        this.entity.VerticalSpeed += gradSpeed;
+        const gradSpeed = this.entity.VerticalSpeed / this.EaseInSpeed;
+        this.entity.VerticalSpeed += (gradSpeed === 0 ? -1 : gradSpeed) * Renderer.Instance.TimerDelta;
     }
 
     StopHorizontal() {
@@ -84,7 +60,7 @@ export default class MoveController {
             this.entity.HorizontalSpeed -= gradSpeed * Renderer.Instance.TimerDelta;
         }
     }
-
+    
     StopVertical() {
         if (this.entity.VerticalSpeed <= 0.1 && this.entity.VerticalSpeed >= -0.1) {
             this.entity.VerticalSpeed = 0;

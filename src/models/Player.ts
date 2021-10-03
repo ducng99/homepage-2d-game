@@ -60,7 +60,7 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
             this.Position.x = tmpInfo.optimal;
         }
         else {
-            this.Position.MoveX(this.HorizontalSpeed * Renderer.Instance.TimerDelta);
+            this.Position.MoveX(tmpInfo.nextDistance);
         }
 
         tmpInfo.nextDistance = -this.VerticalSpeed * Renderer.Instance.TimerDelta;
@@ -75,7 +75,7 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
             this.Position.y = tmpInfo.optimal;
         }
         else {
-            this.Position.MoveY(-this.VerticalSpeed * Renderer.Instance.TimerDelta);
+            this.Position.MoveY(tmpInfo.nextDistance);
             this._isOnGround = false;
         }
     }
@@ -129,12 +129,17 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
 
             switch (direction) {
                 case BoxDirection.Top:
+                    if (entityBounds.top + info.nextDistance <= 0) {
+                        info.optimal = this.Position.y;
+                        return true;
+                    }
+                
                     let topRowMin = Math.floor(entityBounds.top / tileHeight);
                     let topRowMax = Math.floor((entityBounds.top - info.nextDistance % tileHeight) / tileHeight);
                     leftCol = Math.floor((entityBounds.left + 0.1) / tileWidth);
                     rightCol = Math.floor((entityBounds.right - 0.1) / tileWidth);
 
-                    for (let i = topRowMax; i >= topRowMin; i--) {
+                    for (let i = topRowMin; i <= topRowMax; i++) {
                         const row = TerrainBlocks.slice(GameMap.MapInfo.width * i + leftCol, GameMap.MapInfo.width * i + rightCol + 1);
 
                         for (let n = 0; n < row.length; n++) {
@@ -146,6 +151,11 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
                     }
                     break;
                 case BoxDirection.Bottom:
+                    if (entityBounds.bottom + info.nextDistance >= GameMap.Height) {
+                        info.optimal = this.Position.y;
+                        return true;
+                    }
+                
                     let bottomRowMin = Math.floor(entityBounds.bottom / tileHeight);
                     let bottomRowMax = Math.floor((entityBounds.bottom + info.nextDistance % tileHeight) / tileHeight);
                     leftCol = Math.floor((entityBounds.left + 0.1) / tileWidth);
@@ -163,6 +173,11 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
                     }
                     break;
                 case BoxDirection.Left:
+                    if (this.Position.x + info.nextDistance <= 0) {
+                        info.optimal = this.Position.x;
+                        return true;
+                    }
+                    
                     topRow = Math.round((entityBounds.top + 0.1) / tileHeight);
                     bottomRow = Math.round((entityBounds.bottom - 0.1) / tileHeight);
                     let leftColMin = Math.floor(entityBounds.left / tileWidth);
@@ -180,6 +195,11 @@ export default class Player extends Mixin(Entity, Movable, Collidable) {
                     }
                     break;
                 case BoxDirection.Right:
+                    if (this.Position.x + entityBounds.width + info.nextDistance >= GameMap.Width) {
+                        info.optimal = this.Position.x;
+                        return true;
+                    }
+                    
                     topRow = Math.round((entityBounds.top + 0.1) / tileHeight);
                     bottomRow = Math.round((entityBounds.bottom - 0.1) / tileHeight);
                     let rightColMin = Math.floor(entityBounds.right / tileWidth);
