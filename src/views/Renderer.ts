@@ -17,7 +17,7 @@ export default class Renderer {
     readonly App: PIXI.Application;
     get FPS() { return this.App.ticker.FPS }
 
-    private _timerDelta = 0;
+    private _timerDelta = 1;
     get TimerDelta() { return this._timerDelta }
 
     readonly MainContainer: PIXI.Container = new PIXI.Container;

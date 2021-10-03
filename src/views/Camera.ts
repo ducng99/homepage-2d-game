@@ -1,9 +1,10 @@
 import Entity from "../models/Entity";
 import Renderer from "./Renderer";
 import GameBrain from "../models/GameBrain";
-import { Direction } from "../models/extensions/Movable";
+import Movable, { Direction } from "../models/extensions/Movable";
+import { Mixin } from "ts-mixer";
 
-export default class Camera extends Entity {
+export default class Camera extends Mixin(Entity, Movable) {
     private static _instance: Camera;
     static get Instance() {
         if (!this._instance) {
@@ -15,10 +16,14 @@ export default class Camera extends Entity {
     Scale = 3;
     PlayerOffset = 0.45;
     DirectionChangeOffset = 0.3;
-    private Direction = GameBrain.Instance.Player.Direction;
+
+    // set HorizontalSpeed will change this.Direction, we need to maintain our own.
+    private CameraMoveDirection = GameBrain.Instance.Player.Direction
 
     constructor() {
         super();
+        this.MaxHorizontalSpeed = 8;
+        this.MoveController.EaseInSpeed = 1;
     }
 
     Update() {
@@ -34,24 +39,45 @@ export default class Camera extends Entity {
         const offsetDirChangeRightPosition = screenWidth - offsetDirChangePosition;
 
         // Update camera position
-        if (this.Direction === Direction.Right) {
+        if (this.CameraMoveDirection === Direction.Right) {
             if (player.Direction === Direction.Left && playerPositionX < -this.Position.x + offsetDirChangePosition) {
-                this.Direction = Direction.Left;
+                this.CameraMoveDirection = Direction.Left;
             }
-            else if (playerPositionX > -this.Position.x + offsetPosition) {
-                const delta = (playerPositionX - offsetPosition + this.Position.x) / 10 * Renderer.Instance.TimerDelta;
-                this.Position.x -= delta;
+            else if (player.Direction === Direction.Right && playerPositionX >= -this.Position.x + offsetPosition) {
+                const clampPosition = -(playerPositionX - offsetPosition);
+                
+                if (this.Position.x >= clampPosition - player.MaxHorizontalSpeed && this.Position.x <= clampPosition + player.MaxHorizontalSpeed) {
+                    this.Position.x = clampPosition;
+                }
+                else {
+                    this.MoveController.MoveLeft();
+                }
+            }
+            else {
+                this.MoveController.StopHorizontal();
             }
         }
-        else {
+        else if (this.CameraMoveDirection === Direction.Left) {
             if (player.Direction === Direction.Right && playerPositionX > -this.Position.x + offsetDirChangeRightPosition) {
-                this.Direction = Direction.Right;
+                this.CameraMoveDirection = Direction.Right;
             }
-            else if (playerPositionX < -this.Position.x + offsetRightPosition) {
-                const delta = (playerPositionX - offsetRightPosition + this.Position.x) / 10 * Renderer.Instance.TimerDelta;
-                this.Position.x -= delta;
+            else if (player.Direction === Direction.Left && playerPositionX <= -this.Position.x + offsetRightPosition) {
+                const clampPosition = -(playerPositionX - offsetRightPosition);
+                
+                if (this.Position.x >= clampPosition - player.MaxHorizontalSpeed && this.Position.x <= clampPosition + player.MaxHorizontalSpeed) {
+                    this.Position.x = clampPosition;
+                }
+                else {
+                    this.MoveController.MoveRight();
+                }
+            }
+            else {
+                this.MoveController.StopHorizontal();
             }
         }
+
+        // Update position based on speed
+        this.Position.MoveX(this.HorizontalSpeed);
 
         // Clamp it down
         const minX = -(GameBrain.Instance.MapManager.Width * this.Scale) + screenWidth;
@@ -61,7 +87,7 @@ export default class Camera extends Entity {
         else if (this.Position.x < minX) {
             this.Position.x = minX;
         }
-        
+
         // Match center in the view
         this.Position.y = -(GameBrain.Instance.MapManager.Height * container.scale.y - Renderer.Instance.App.screen.height) / 2;
 
