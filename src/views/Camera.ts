@@ -18,7 +18,7 @@ export default class Camera extends Mixin(Entity, Movable) {
     DirectionChangeOffset = 0.3;
 
     // set HorizontalSpeed will change this.Direction, we need to maintain our own.
-    private CameraMoveDirection = GameBrain.Instance.Player.Direction
+    private CameraMoveDirection = GameBrain.Instance.Player.Direction;
 
     constructor() {
         super();
@@ -30,6 +30,7 @@ export default class Camera extends Mixin(Entity, Movable) {
         const container = Renderer.Instance.MainContainer;
         const player = GameBrain.Instance.Player;
         const playerPositionX = player.Position.x * this.Scale;
+        const playerMaxHorizontalSpeed = player.MaxHorizontalSpeed * this.Scale;
         const screenWidth = Renderer.Instance.App.screen.width;
 
         const offsetPosition = screenWidth * this.PlayerOffset;
@@ -38,7 +39,7 @@ export default class Camera extends Mixin(Entity, Movable) {
         const offsetDirChangePosition = screenWidth * this.DirectionChangeOffset;
         const offsetDirChangeRightPosition = screenWidth - offsetDirChangePosition;
 
-        // Update camera position
+        // Check if camera needs to be moved and tell MoveController to move it
         if (this.CameraMoveDirection === Direction.Right) {
             if (player.Direction === Direction.Left && playerPositionX < -this.Position.x + offsetDirChangePosition) {
                 this.CameraMoveDirection = Direction.Left;
@@ -46,7 +47,8 @@ export default class Camera extends Mixin(Entity, Movable) {
             else if (player.Direction === Direction.Right && playerPositionX >= -this.Position.x + offsetPosition) {
                 const clampPosition = -(playerPositionX - offsetPosition);
                 
-                if (this.Position.x >= clampPosition - player.MaxHorizontalSpeed && this.Position.x <= clampPosition + player.MaxHorizontalSpeed) {
+                // Fix jittering
+                if (this.Position.x >= clampPosition - playerMaxHorizontalSpeed && this.Position.x <= clampPosition + playerMaxHorizontalSpeed) {
                     this.Position.x = clampPosition;
                 }
                 else {
@@ -64,7 +66,7 @@ export default class Camera extends Mixin(Entity, Movable) {
             else if (player.Direction === Direction.Left && playerPositionX <= -this.Position.x + offsetRightPosition) {
                 const clampPosition = -(playerPositionX - offsetRightPosition);
                 
-                if (this.Position.x >= clampPosition - player.MaxHorizontalSpeed && this.Position.x <= clampPosition + player.MaxHorizontalSpeed) {
+                if (this.Position.x >= clampPosition - playerMaxHorizontalSpeed && this.Position.x <= clampPosition + playerMaxHorizontalSpeed) {
                     this.Position.x = clampPosition;
                 }
                 else {
