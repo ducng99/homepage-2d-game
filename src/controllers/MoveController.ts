@@ -4,20 +4,22 @@ import Renderer from "../views/Renderer";
 export default class MoveController {
     private entity: Movable
     
+    private _easeOutSpeed = 3;
+    private _easeInSpeed = 3;
+    
     /**
      * How fast speed start until reaches max.
      * The higher the slower. 1 is instant
     */
-    private _easeInSpeed = 3;
     get EaseInSpeed() { return this._easeInSpeed }
     set EaseInSpeed(value) {
         if (value >= 1) this._easeInSpeed = value;
     }
+    
     /** 
      * How fast speed slow down until reaches min.
      * The higher the slower. 1 is instant
     */
-    private _easeOutSpeed = 3;
     get EaseOutSpeed() { return this._easeOutSpeed }
     set EaseOutSpeed(value) {
         if (value >= 1) this._easeOutSpeed = value;

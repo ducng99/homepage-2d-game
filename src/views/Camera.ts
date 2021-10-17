@@ -1,10 +1,8 @@
-import Entity from "../models/Entity";
 import Renderer from "./Renderer";
 import GameBrain from "../models/GameBrain";
-import Movable, { Direction } from "../models/extensions/Movable";
-import { Mixin } from "ts-mixer";
+import Movable, { HorizontalDirection } from "../models/extensions/Movable";
 
-export default class Camera extends Mixin(Entity, Movable) {
+export default class Camera extends Movable {
     private static _instance: Camera;
     static get Instance() {
         if (!this._instance) {
@@ -13,7 +11,7 @@ export default class Camera extends Mixin(Entity, Movable) {
         return this._instance;
     }
 
-    Scale = 3;
+    Scale = 2;
     PlayerOffset = 0.45;
     DirectionChangeOffset = 0.3;
 
@@ -23,7 +21,6 @@ export default class Camera extends Mixin(Entity, Movable) {
     constructor() {
         super();
         this.MaxHorizontalSpeed = 8;
-        this.MoveController.EaseInSpeed = 1;
     }
 
     Update() {
@@ -40,11 +37,11 @@ export default class Camera extends Mixin(Entity, Movable) {
         const offsetDirChangeRightPosition = screenWidth - offsetDirChangePosition;
 
         // Check if camera needs to be moved and tell MoveController to move it
-        if (this.CameraMoveDirection === Direction.Right) {
-            if (player.Direction === Direction.Left && playerPositionX < -this.Position.x + offsetDirChangePosition) {
-                this.CameraMoveDirection = Direction.Left;
+        if (this.CameraMoveDirection === HorizontalDirection.Right) {
+            if (player.Direction === HorizontalDirection.Left && playerPositionX < -this.Position.x + offsetDirChangePosition) {
+                this.CameraMoveDirection = HorizontalDirection.Left;
             }
-            else if (player.Direction === Direction.Right && playerPositionX >= -this.Position.x + offsetPosition) {
+            else if (player.Direction === HorizontalDirection.Right && playerPositionX >= -this.Position.x + offsetPosition) {
                 const clampPosition = -(playerPositionX - offsetPosition);
                 
                 // Fix jittering
@@ -59,11 +56,11 @@ export default class Camera extends Mixin(Entity, Movable) {
                 this.MoveController.StopHorizontal();
             }
         }
-        else if (this.CameraMoveDirection === Direction.Left) {
-            if (player.Direction === Direction.Right && playerPositionX > -this.Position.x + offsetDirChangeRightPosition) {
-                this.CameraMoveDirection = Direction.Right;
+        else if (this.CameraMoveDirection === HorizontalDirection.Left) {
+            if (player.Direction === HorizontalDirection.Right && playerPositionX > -this.Position.x + offsetDirChangeRightPosition) {
+                this.CameraMoveDirection = HorizontalDirection.Right;
             }
-            else if (player.Direction === Direction.Left && playerPositionX <= -this.Position.x + offsetRightPosition) {
+            else if (player.Direction === HorizontalDirection.Left && playerPositionX <= -this.Position.x + offsetRightPosition) {
                 const clampPosition = -(playerPositionX - offsetRightPosition);
                 
                 if (this.Position.x >= clampPosition - playerMaxHorizontalSpeed && this.Position.x <= clampPosition + playerMaxHorizontalSpeed) {
@@ -91,7 +88,7 @@ export default class Camera extends Mixin(Entity, Movable) {
         }
 
         // Match center in the view
-        this.Position.y = -(GameBrain.Instance.MapManager.Height * container.scale.y - Renderer.Instance.App.screen.height) / 2;
+        this.Position.y = -(GameBrain.Instance.MapManager.Height * this.Scale - Renderer.Instance.App.screen.height) / 2;
 
         // Update main container
         container.scale.set(this.Scale);

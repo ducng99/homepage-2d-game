@@ -1,10 +1,11 @@
 import MoveController from "../../controllers/MoveController";
+import Entity from "../Entity";
 
-export enum Direction {
+export enum HorizontalDirection {
     Left, Right
 }
 
-export default abstract class Movable {
+export default abstract class Movable extends Entity {
     private _maxHorizontalSpeed = 10;
     get MaxHorizontalSpeed() {
         return this._maxHorizontalSpeed;
@@ -28,7 +29,7 @@ export default abstract class Movable {
     private _moveController?: MoveController;
     private _horizontalSpeed = 0;
     private _verticalSpeed = 0;
-    private _direction = Direction.Right;
+    private _direction = HorizontalDirection.Right;
 
     get MoveController() {
         if (!this._moveController) {
@@ -56,10 +57,10 @@ export default abstract class Movable {
         else {
             this._horizontalSpeed = value;
             if (value > 0) {
-                this._direction = Direction.Right;
+                this._direction = HorizontalDirection.Right;
             }
             else if (value < 0) {
-                this._direction = Direction.Left;
+                this._direction = HorizontalDirection.Left;
             }
         }
     }

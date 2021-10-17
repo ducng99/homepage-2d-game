@@ -40,6 +40,9 @@ export default class Renderer {
         this.App.view.focus();
     }
 
+    /**
+     * ! Must be called outside constructor
+     */
     async Init() {
         this.App.stage.addChildAt(GameBrain.Instance.MapManager.BackgroundSprite, 0);
 

@@ -3,7 +3,6 @@ import Renderer from '../../views/Renderer'
 import GameMap from './Map'
 import TilesetManager from './TilesetManager'
 import MapBlock from './MapBlock'
-import Camera from '../../views/Camera'
 
 export default class MapManager {
     private _backgroundSprite: PIXI.Sprite;
@@ -27,7 +26,7 @@ export default class MapManager {
     }
 
     private async InitTextures() {
-        const tileset_mgr = await TilesetManager.Load('/assets/maps/blocks.json');
+        const tileset_mgr = await TilesetManager.Load('/assets/maps/cyber-street.json');
         this._gameMap = await GameMap.Load('/assets/maps/map1.json');
         this._terrainBlocks = this._gameMap.Init(tileset_mgr);
 

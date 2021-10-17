@@ -19,16 +19,54 @@ export interface MapStruct {
 }
 
 export interface Layer {
-    data:    number[];
-    height:  number;
-    id:      number;
-    name:    string;
-    opacity: number;
-    type:    string;
-    visible: boolean;
-    width:   number;
-    x:       number;
-    y:       number;
+    data?:      number[];
+    height?:    number;
+    id:         number;
+    name:       string;
+    opacity:    number;
+    type:       string;
+    visible:    boolean;
+    width?:     number;
+    x:          number;
+    y:          number;
+    draworder?: string;
+    objects?:   Object[];
+}
+
+export interface Object {
+    height:      number;
+    id:          number;
+    name:        string;
+    properties?: Property[];
+    rotation:    number;
+    type:        string;
+    visible:     boolean;
+    width:       number;
+    x:           number;
+    y:           number;
+    polygon?:    Polygon[];
+}
+
+export interface Polygon {
+    x: number;
+    y: number;
+}
+
+export interface Property {
+    name:  Name;
+    type:  Type;
+    value: boolean;
+}
+
+export enum Name {
+    BottomBlocked = "bottom_blocked",
+    LeftBlocked = "left_blocked",
+    RightBlocked = "right_blocked",
+    TopBlocked = "top_blocked",
+}
+
+export enum Type {
+    Bool = "bool",
 }
 
 export interface Tileset {

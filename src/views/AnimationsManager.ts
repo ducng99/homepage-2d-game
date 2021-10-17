@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import Renderer from './Renderer';
 
 export default class AnimationManager {
-    private Animations: PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>[]>;
+    private Animations: PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>[]> = {};
 
     private PlayingAnimationName = "";
     private PlayingAnimation?: PIXI.Texture<PIXI.Resource>[];
@@ -16,8 +16,9 @@ export default class AnimationManager {
     private AnimationDelay = 100;
     private lastTick = 0;
 
-    constructor(animations: PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>[]>) {
-        this.Animations = animations;
+    constructor(animations?: PIXI.utils.Dict<PIXI.Texture<PIXI.Resource>[]>) {
+        if (animations)
+            this.Animations = animations;
     }
 
     PlayAnimation(name: string) {

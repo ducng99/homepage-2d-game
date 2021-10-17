@@ -5,8 +5,7 @@ import Renderer from './Renderer';
 import Observable from '../utils/Observable'
 
 export default class EntityView {
-    private _entity: Entity;
-    get Entity() { return this._entity }
+    private readonly Entity: Entity;
 
     private _textures: PIXI.Texture<PIXI.Resource>[] = [];
     get Textures() {
@@ -16,8 +15,8 @@ export default class EntityView {
     AnimationsManager?: AnimationsManager;
     Rotation = 0;
 
-    FlipX = new Observable(false);
-    FlipY = new Observable(false);
+    readonly FlipX = new Observable(false);
+    readonly FlipY = new Observable(false);
 
     private DefaultTexture?: PIXI.Texture<PIXI.Resource>;
     private readonly CurrentSprite: PIXI.Sprite;
@@ -28,8 +27,8 @@ export default class EntityView {
     }
 
     private constructor(entity: Entity) {
-        this._entity = entity;
-        this._entity.View = this;
+        this.Entity = entity;
+        this.Entity.View = this;
 
         this.CurrentSprite = new PIXI.Sprite;
         this.CurrentSprite.anchor.x = 0.5;
@@ -53,7 +52,7 @@ export default class EntityView {
             await new Promise(resolve => {
                 Loader.add(jsonPath).load(() => {
                     const textures = Loader.resources[jsonPath].textures;
-                    instance.AnimationsManager = new AnimationsManager(Loader.resources[jsonPath].spritesheet!.animations);
+                    instance.AnimationsManager = new AnimationsManager(Loader.resources[jsonPath].spritesheet?.animations);
 
                     if (textures) {
                         Object.values(textures).forEach(texture => {

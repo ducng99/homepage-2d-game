@@ -1,16 +1,16 @@
-import { Texture, Resource, Loader as PIXILoader, SCALE_MODES } from "pixi.js";
+import * as PIXI from 'pixi.js';
 
 export default class TextureManager {
     private constructor() { }
 
-    private _textures: Texture<Resource>[] = [];
+    private _textures: PIXI.Texture<PIXI.Resource>[] = [];
     get Textures() {
         return this._textures;
     }
 
     static async Load(jsonPath: string) {
         const instance = new TextureManager;
-        const Loader = new PIXILoader;
+        const Loader = new PIXI.Loader;
 
         try {
             await new Promise(resolve => {
@@ -20,7 +20,7 @@ export default class TextureManager {
                     if (textures) {
                         // forEach is 50 times faster than for...in ¯\_(ツ)_/¯
                         Object.values(textures).forEach(texture => {
-                            texture.baseTexture.scaleMode = SCALE_MODES.NEAREST;
+                            texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
                             instance.Textures.push(texture);
                         });
                     }
