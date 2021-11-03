@@ -20,16 +20,20 @@ export default class Renderer {
     private _timerDelta = 1;
     get TimerDelta() { return this._timerDelta }
 
-    readonly MainContainer: PIXI.Container = new PIXI.Container;
-
-    private EntityViews: EntityView[] = [];
+    private readonly MainContainer: PIXI.Container = new PIXI.Container;
+    readonly BackgroundContainer: PIXI.Container = new PIXI.Container;
+    readonly MapContainer: PIXI.Container = new PIXI.Container;
+    readonly EntitiesContainer: PIXI.Container = new PIXI.Container;
 
     private constructor() {
         this.App = new PIXI.Application();
         this.App.renderer.view.style.position = "absolute";
         this.App.renderer.view.style.display = "block";
         this.App.resizeTo = window;
-        this.App.stage.addChild(this.MainContainer);
+        
+        // * Has to be in this order to work as z-order
+        this.MainContainer.addChild(this.MapContainer, this.EntitiesContainer);
+        this.App.stage.addChild(this.BackgroundContainer, this.MainContainer);
 
         this.App.view.setAttribute('tabindex', '1');
 
@@ -44,11 +48,6 @@ export default class Renderer {
      * ! Must be called outside constructor
      */
     async Init() {
-        this.App.stage.addChildAt(GameBrain.Instance.MapManager.BackgroundSprite, 0);
-
-        const playerView = await EntityView.Load(GameBrain.Instance.Player, '/assets/entities/player.json');
-        this.EntityViews.push(playerView);
-
         this.App.ticker.add(delta => {
             this._timerDelta = delta;
 
@@ -57,11 +56,7 @@ export default class Renderer {
     }
 
     private Update() {
-        Camera.Instance.Update();
+        Camera.Instance.Update(this.MainContainer);
         GameBrain.Instance.Update();
-
-        this.EntityViews.forEach(view => {
-            view.Update();
-        });
     }
 }

@@ -1,6 +1,8 @@
 import Renderer from "./Renderer";
 import GameBrain from "../models/GameBrain";
 import Movable, { HorizontalDirection } from "../models/extensions/Movable";
+import { Container } from "pixi.js";
+import ParallaxBackground from './ParallaxBackground'
 
 export default class Camera extends Movable {
     private static _instance: Camera;
@@ -10,6 +12,8 @@ export default class Camera extends Movable {
         }
         return this._instance;
     }
+    
+    background = new ParallaxBackground;
 
     Scale = 2;
     PlayerOffset = 0.45;
@@ -23,8 +27,7 @@ export default class Camera extends Movable {
         this.MaxHorizontalSpeed = 8;
     }
 
-    Update() {
-        const container = Renderer.Instance.MainContainer;
+    Update(container: Container) {
         const player = GameBrain.Instance.Player;
         const playerPositionX = player.Position.x * this.Scale;
         const playerMaxHorizontalSpeed = player.MaxHorizontalSpeed * this.Scale;
@@ -87,9 +90,12 @@ export default class Camera extends Movable {
             this.Position.x = minX;
         }
 
-        // Match center in the view
-        this.Position.y = -(GameBrain.Instance.MapManager.Height * this.Scale - Renderer.Instance.App.screen.height) / 2;
+        // Match bottom of map
+        this.Position.y = -(GameBrain.Instance.MapManager.Height * this.Scale - Renderer.Instance.App.screen.height);
 
+        // Update parallax background
+        this.background.Update(this.Position);
+        
         // Update main container
         container.scale.set(this.Scale);
         container.position.set(this.Position.x, this.Position.y);

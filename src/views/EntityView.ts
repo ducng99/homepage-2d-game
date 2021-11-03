@@ -21,14 +21,12 @@ export default class EntityView {
     private DefaultTexture?: PIXI.Texture<PIXI.Resource>;
     private readonly CurrentSprite: PIXI.Sprite;
 
-    private IsReady = false;
     get Size() {
         return { width: this.CurrentSprite.width, height: this.CurrentSprite.height };
     }
 
     private constructor(entity: Entity) {
         this.Entity = entity;
-        this.Entity.View = this;
 
         this.CurrentSprite = new PIXI.Sprite;
         this.CurrentSprite.anchor.x = 0.5;
@@ -41,7 +39,7 @@ export default class EntityView {
             this.CurrentSprite.scale.y *= -1;
         });
 
-        Renderer.Instance.MainContainer.addChild(this.CurrentSprite);
+        Renderer.Instance.EntitiesContainer.addChild(this.CurrentSprite);
     }
 
     static async Load(entity: Entity, jsonPath: string) {
@@ -67,7 +65,6 @@ export default class EntityView {
                         });
                     }
 
-                    instance.IsReady = true;
                     resolve(0);
                 });
             });
@@ -81,19 +78,17 @@ export default class EntityView {
     }
 
     Update() {
-        if (this.IsReady) {
-            if (this.DefaultTexture) {
-                this.CurrentSprite.texture = this.DefaultTexture;
-            }
-
-            if (this.AnimationsManager) {
-                this.AnimationsManager.Update();
-
-                if (this.AnimationsManager.CurrentTexture)
-                    this.CurrentSprite.texture = this.AnimationsManager.CurrentTexture;
-            }
-
-            this.CurrentSprite.position.set(this.Entity.Position.x, this.Entity.Position.y);
+        if (this.DefaultTexture) {
+            this.CurrentSprite.texture = this.DefaultTexture;
         }
+
+        if (this.AnimationsManager) {
+            this.AnimationsManager.Update();
+
+            if (this.AnimationsManager.CurrentTexture)
+                this.CurrentSprite.texture = this.AnimationsManager.CurrentTexture;
+        }
+
+        this.CurrentSprite.position.set(this.Entity.Position.x, this.Entity.Position.y);
     }
 }

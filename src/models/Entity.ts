@@ -12,6 +12,12 @@ export default abstract class Entity {
     constructor() {
         this._position = new Vector2();
     }
+    
+    InitEntityView() {
+        EntityView.Load(this, '/assets/entities/player.json').then(view => {
+            this.View = view;
+        });
+    }
 
-    abstract Update(): void;
+    abstract Update(...args: any): void;
 }

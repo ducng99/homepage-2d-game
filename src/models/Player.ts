@@ -16,15 +16,19 @@ export default class Player extends Mixin(Movable, Collidable) {
         super();
         this.State = PlayerState.Standing;
         this.MaxHorizontalSpeed = 4;
-        this.MaxUpSpeed = 20;
+        this.MaxUpSpeed = 30;
         this.Position.x = 100;
         this.MoveController = new PlayerMoveController(this);
+
+        this.InitEntityView();
     }
 
     Update() {
-        // Update player view to flip to the right direction
+        // Update player view to flip to the right direction and update it
         if (this.View) {
             this.View.FlipX.Value = this.Direction === HorizontalDirection.Left;
+
+            this.View.Update();
         }
 
         // Check collision and move the player
