@@ -42,33 +42,38 @@ export default class Player extends Mixin(Movable, Collidable) {
     }
 
     private UpdatePosition() {
-        let tmpInfo = {
-            nextDistance: 0,
-            optimal: 0
-        };
 
-        tmpInfo.nextDistance = this.HorizontalSpeed * Renderer.Instance.TimerDelta;
-        if ((this.HorizontalSpeed < 0 && this.CollisionController.IsCollidingTerrain(BoxDirection.Left, tmpInfo)) || (this.HorizontalSpeed > 0 && this.CollisionController.IsCollidingTerrain(BoxDirection.Right, tmpInfo))) {
-            this.Position.x = tmpInfo.optimal;
+        const nextHDistance = this.HorizontalSpeed * Renderer.Instance.TimerDelta;
+        const [isCollideLeft, optimalValueLeft] = this.CollisionController.IsCollidingTerrain(BoxDirection.Left, nextHDistance);
+        const [isCollideRight, optimalValueRight] = this.CollisionController.IsCollidingTerrain(BoxDirection.Right, nextHDistance);
+        
+        if (this.HorizontalSpeed < 0 && isCollideLeft) {
+            this.Position.x = optimalValueLeft;
+        }
+        else if (this.HorizontalSpeed > 0 && isCollideRight) {
+            this.Position.x = optimalValueRight;
         }
         else {
-            this.Position.MoveX(tmpInfo.nextDistance);
+            this.Position.MoveX(nextHDistance);
         }
 
-        tmpInfo.nextDistance = -this.VerticalSpeed * Renderer.Instance.TimerDelta;
-        if ((this.VerticalSpeed < 0 && this.CollisionController.IsCollidingTerrain(BoxDirection.Bottom, tmpInfo)) || (this.VerticalSpeed > 0 && this.CollisionController.IsCollidingTerrain(BoxDirection.Top, tmpInfo))) {
-            if (this.VerticalSpeed < 0) {
-                this._isOnGround = true;
-            }
-            else {
-                this.VerticalSpeed = 0;
-                this._isOnGround = false;
-            }
-            this.Position.y = tmpInfo.optimal;
-        }
-        else {
-            this.Position.MoveY(tmpInfo.nextDistance);
+        const nextVDistance = -this.VerticalSpeed * Renderer.Instance.TimerDelta;
+        const [isCollideTop, optimalValueTop] = this.CollisionController.IsCollidingTerrain(BoxDirection.Top, nextVDistance);
+        const [isCollideBottom, optimalValueBottom] = this.CollisionController.IsCollidingTerrain(BoxDirection.Bottom, nextVDistance);
+        
+        if (this.VerticalSpeed > 0 && isCollideTop) {
+            this.VerticalSpeed = -1;
             this._isOnGround = false;
+            this.Position.y = optimalValueTop;
+        }
+        else if (this.VerticalSpeed < 0 && isCollideBottom) {
+            this._isOnGround = true;
+            this.Position.y = optimalValueBottom;
+        }
+        else {
+            this.Position.MoveY(nextVDistance);
+            this._isOnGround = false;
+            console.log(2);
         }
     }
 
