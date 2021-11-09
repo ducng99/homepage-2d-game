@@ -78,15 +78,19 @@ export default class EntityView {
     }
 
     Update() {
-        if (this.DefaultTexture) {
-            this.CurrentSprite.texture = this.DefaultTexture;
-        }
-
+        let textureApplied = false;
+        
         if (this.AnimationsManager) {
             this.AnimationsManager.Update();
 
-            if (this.AnimationsManager.CurrentTexture)
+            if (this.AnimationsManager.CurrentTexture) {
                 this.CurrentSprite.texture = this.AnimationsManager.CurrentTexture;
+                textureApplied = true;
+            }
+        }
+        
+        if (!textureApplied && this.DefaultTexture) {
+            this.CurrentSprite.texture = this.DefaultTexture;
         }
 
         this.CurrentSprite.position.set(this.Entity.Position.x, this.Entity.Position.y);

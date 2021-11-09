@@ -26,7 +26,7 @@ export default class AnimationManager {
             this.PlayingAnimationName = name;
             this.PlayingAnimation = this.Animations[name];
             this.lastTick = 0;
-            this.CurrentTextureInd = -1;
+            this.CurrentTextureInd = 0;
             this.AnimationDelay = delay;
         }
     }
