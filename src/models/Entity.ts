@@ -13,8 +13,8 @@ export default abstract class Entity {
         this._position = new Vector2();
     }
     
-    InitEntityView() {
-        EntityView.Load(this, '/assets/entities/player.json').then(view => {
+    InitEntityView(jsonFilePath: string) {
+        EntityView.Load(this, jsonFilePath).then(view => {
             this.View = view;
         });
     }

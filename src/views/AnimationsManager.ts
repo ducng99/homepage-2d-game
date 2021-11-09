@@ -21,12 +21,13 @@ export default class AnimationManager {
             this.Animations = animations;
     }
 
-    PlayAnimation(name: string) {
+    PlayAnimation(name: string, delay = 100) {
         if (this.PlayingAnimationName !== name && name in this.Animations) {
             this.PlayingAnimationName = name;
             this.PlayingAnimation = this.Animations[name];
             this.lastTick = 0;
             this.CurrentTextureInd = -1;
+            this.AnimationDelay = delay;
         }
     }
 

@@ -5,9 +5,6 @@ import TilesetManager from './TilesetManager'
 import MapBlock from './MapBlock'
 
 export default class MapManager {
-    private _backgroundSprite: PIXI.Sprite;
-    get BackgroundSprite() { return this._backgroundSprite }
-
     private _gameMap?: GameMap;
     get GameMap() { return this._gameMap }
 
@@ -18,9 +15,6 @@ export default class MapManager {
     get Height() { return this.GameMap?.Height ?? 0 }
 
     constructor() {
-        this._backgroundSprite = PIXI.Sprite.from('/assets/bg.png');
-        this._backgroundSprite.width = Renderer.Instance.App.screen.width;
-        this._backgroundSprite.height = Renderer.Instance.App.screen.height;
 
         this.InitTextures();
     }
@@ -30,6 +24,6 @@ export default class MapManager {
         this._gameMap = await GameMap.Load('/assets/maps/map1.json');
         this._terrainBlocks = this._gameMap.Init(tileset_mgr);
 
-        Renderer.Instance.MainContainer.addChildAt(this._gameMap.SpritesContainer, 1);
+        Renderer.Instance.MapContainer.addChild(this._gameMap.SpritesContainer);
     }
 }

@@ -20,7 +20,7 @@ export default class Player extends Mixin(Movable, Collidable) {
         this.Position.x = 100;
         this.MoveController = new PlayerMoveController(this);
 
-        this.InitEntityView();
+        this.InitEntityView('/assets/entities/player.json');
     }
 
     Update() {
@@ -81,7 +81,6 @@ export default class Player extends Mixin(Movable, Collidable) {
         }
         else {
             this.State = PlayerState.Running;
-
         }
     }
 
@@ -89,13 +88,16 @@ export default class Player extends Mixin(Movable, Collidable) {
         if (this.View && this.View.AnimationsManager) {
             switch (this.State) {
                 case PlayerState.Standing:
-                    this.View.AnimationsManager.StopAnimation();
+                    this.View.AnimationsManager.PlayAnimation('player-stand', 300);
                     break;
                 case PlayerState.Running:
-                    this.View.AnimationsManager.PlayAnimation('player-walk');
+                    this.View.AnimationsManager.PlayAnimation('player-walk', 150);
                     break;
                 case PlayerState.Jumping:
                     this.View.AnimationsManager.PlayAnimation('player-jump');
+                    break;
+                default:
+                    this.View.AnimationsManager.StopAnimation();
                     break;
             }
         }
