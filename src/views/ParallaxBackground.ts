@@ -4,7 +4,7 @@ import Renderer from './Renderer'
 
 export default class ParallaxBackground {
     private Layers = [new PIXI.Container, new PIXI.Container, new PIXI.Container, new PIXI.Container];
-    private static readonly PARALLAX_BACKGROUND_SPEEDS = [1.05, 1.1, 1.13, 1.14];
+    private static readonly PARALLAX_BACKGROUND_SPEEDS = [0.95, 0.90, 0.87, 0.86];
 
     constructor() {
         const callback = (ready: boolean) => {
@@ -31,7 +31,7 @@ export default class ParallaxBackground {
             t.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
         });
 
-        // TODO: A better implementation would be to have 3 sprites for each layer, and as one moves out of screen, it moves to the other side.
+        // TODO: A better implementation would be to have enough sprites for each layer to fit the screen, and as one moves out of screen, it moves to the other side.
         for (let layerIndex = 0; layerIndex < this.Layers.length; layerIndex++) {
             const spritesCount = GameBrain.Instance.MapManager.Width / textures[layerIndex].width * 2;
 
