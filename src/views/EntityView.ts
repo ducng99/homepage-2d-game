@@ -32,10 +32,10 @@ export default class EntityView {
         this.CurrentSprite.anchor.x = 0.5;
         this.CurrentSprite.position.set(this.Entity.Position.x, this.Entity.Position.y);
 
-        this.FlipX.onChange(() => {
+        this.FlipX.addListener(() => {
             this.CurrentSprite.scale.x *= -1;
         });
-        this.FlipY.onChange(() => {
+        this.FlipY.addListener(() => {
             this.CurrentSprite.scale.y *= -1;
         });
 

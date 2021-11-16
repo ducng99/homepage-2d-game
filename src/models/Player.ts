@@ -62,7 +62,7 @@ export default class Player extends Mixin(Movable, Collidable) {
         const [isCollideBottom, optimalValueBottom] = this.CollisionController.IsCollidingTerrain(BoxDirection.Bottom, nextVDistance);
         
         if (this.VerticalSpeed > 0 && isCollideTop) {
-            this.VerticalSpeed = -1;
+            this.VerticalSpeed = -1;    // If player hit a ceiling, stop the jump and start falling
             this._isOnGround = false;
             this.Position.y = optimalValueTop;
         }
@@ -73,7 +73,6 @@ export default class Player extends Mixin(Movable, Collidable) {
         else {
             this.Position.MoveY(nextVDistance);
             this._isOnGround = false;
-            console.log(2);
         }
     }
 

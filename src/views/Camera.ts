@@ -13,16 +13,19 @@ export default class Camera extends Movable {
         return this._instance;
     }
     
-    background = new ParallaxBackground;
+    /**
+     * ? should this be in Camera?
+     */
+    readonly Background = new ParallaxBackground;
 
     Scale = 2;
-    PlayerOffset = 0.45;
-    DirectionChangeOffset = 0.3;
+    private readonly PlayerOffset = 0.45;
+    private readonly DirectionChangeOffset = 0.3;
 
     // set HorizontalSpeed will change this.Direction, we need to maintain our own.
     private CameraMoveDirection = GameBrain.Instance.Player.Direction;
 
-    constructor() {
+    private constructor() {
         super();
         this.MaxHorizontalSpeed = 8;
     }
@@ -94,7 +97,7 @@ export default class Camera extends Movable {
         this.Position.y = -(GameBrain.Instance.MapManager.Height * this.Scale - Renderer.Instance.App.screen.height);
 
         // Update parallax background
-        this.background.Update(this.Position);
+        this.Background.Update(this.Position.x);
         
         // Update main container
         container.scale.set(this.Scale);

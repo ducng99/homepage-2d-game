@@ -27,7 +27,11 @@ export default class Observable<T> {
         }
     }
 
-    onChange(callback: Callback<T>) {
+    addListener(callback: Callback<T>) {
         this._callbacks.push(callback);
+    }
+    
+    removeListener(callback: Callback<T>) {
+        this._callbacks = this._callbacks.filter(func => func !== callback);
     }
 }
