@@ -33,16 +33,19 @@ export default class ParallaxBackground {
 
         // TODO: A better implementation would be to have enough sprites for each layer to fit the screen, and as one moves out of screen, it moves to the other side.
         for (let layerIndex = 0; layerIndex < this.Layers.length; layerIndex++) {
-            const spritesCount = GameBrain.Instance.MapManager.Width / textures[layerIndex].width * 2;
+            const spritesCount = Math.round(GameBrain.Instance.MapManager.Width / textures[layerIndex].width);
 
             for (let i = 0; i < spritesCount; i++) {
                 const sprite = new PIXI.Sprite(textures[layerIndex]);
-                sprite.position.x = i * textures[layerIndex].width;
                 
+                // ! Specifically for the current map, shift background up a bit.
+                sprite.position.y -= 64 * 3;
+
                 const ratio = textures[layerIndex].width / textures[layerIndex].height;
                 sprite.height = Renderer.Instance.App.screen.height;
                 sprite.width = sprite.height * ratio;
-                
+                sprite.position.x = i * sprite.width;
+
                 this.Layers[layerIndex].addChild(sprite);
             }
         }
