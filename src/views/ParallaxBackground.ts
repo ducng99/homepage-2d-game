@@ -4,7 +4,7 @@ import Renderer from './Renderer'
 
 export default class ParallaxBackground {
     private Layers = [new PIXI.Container, new PIXI.Container, new PIXI.Container, new PIXI.Container];
-    private static readonly PARALLAX_BACKGROUND_SPEEDS = [0.05, 0.06, 0.07, 0.08];
+    private static readonly PARALLAX_BACKGROUND_SPEEDS = [1.05, 1.1, 1.13, 1.14];
 
     constructor() {
         const callback = (ready: boolean) => {
@@ -50,7 +50,7 @@ export default class ParallaxBackground {
 
     Update(cameraPositionX: number) {
         for (let i = 0; i < this.Layers.length; i++) {
-            this.Layers[this.Layers.length - 1 - i].position.x = cameraPositionX + (cameraPositionX * ParallaxBackground.PARALLAX_BACKGROUND_SPEEDS[i]) * i;
+            this.Layers[this.Layers.length - 1 - i].position.x = cameraPositionX * ParallaxBackground.PARALLAX_BACKGROUND_SPEEDS[i];
         }
     }
 }
