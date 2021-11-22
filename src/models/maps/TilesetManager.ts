@@ -1,6 +1,15 @@
 import * as PIXI from 'pixi.js';
 
-export default class TextureManager {
+export default class TilesetManager {
+    private static _instance: TilesetManager;
+    static get Instance() {
+        if (!this._instance) {
+            this._instance = new TilesetManager();
+        }
+
+        return this._instance;
+    }
+
     private constructor() { }
 
     private _textures: PIXI.Texture<PIXI.Resource>[] = [];
@@ -9,7 +18,6 @@ export default class TextureManager {
     }
 
     static async Load(jsonPath: string) {
-        const instance = new TextureManager;
         const Loader = new PIXI.Loader;
 
         try {
@@ -18,10 +26,9 @@ export default class TextureManager {
                     const textures = Loader.resources[jsonPath].textures;
 
                     if (textures) {
-                        // forEach is 50 times faster than for...in ¯\_(ツ)_/¯
                         Object.values(textures).forEach(texture => {
                             texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-                            instance.Textures.push(texture);
+                            this.Instance.Textures.push(texture);
                         });
                     }
 
@@ -33,7 +40,5 @@ export default class TextureManager {
             console.error(`Failed when loading texture from ${jsonPath}`);
             throw error;
         }
-
-        return instance;
     }
 }

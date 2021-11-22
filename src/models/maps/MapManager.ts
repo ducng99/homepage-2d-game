@@ -10,11 +10,11 @@ export default class MapManager {
 
     private _terrainBlocks: MapBlock[] = [];
     get TerrainBlocks() { return this._terrainBlocks }
-    
+
     get Width() { return this.GameMap?.Width ?? 0 }
     get Height() { return this.GameMap?.Height ?? 0 }
-    
-    private _isReady = new Observable(false);    
+
+    private _isReady = new Observable(false);
     get IsReady() { return this._isReady }
 
     constructor() {
@@ -22,9 +22,11 @@ export default class MapManager {
     }
 
     private async InitTextures() {
-        const tileset_mgr = await TilesetManager.Load('/assets/maps/cyber-street.json');
+        await TilesetManager.Load('/assets/maps/cyber-street.json');
+        await TilesetManager.Load('/assets/maps/residential.json');
+        
         this._gameMap = await GameMap.Load('/assets/maps/map1.json');
-        this._terrainBlocks = this._gameMap.Init(tileset_mgr);
+        this._terrainBlocks = this._gameMap.Init();
 
         Renderer.Instance.MapContainer.addChild(this._gameMap.SpritesContainer);
         this._isReady.Value = true;
