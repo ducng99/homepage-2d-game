@@ -35,7 +35,7 @@ export default class CollisionController {
             const tileHeight = GameMap.MapInfo.tileheight;
             const tileWidth = GameMap.MapInfo.tilewidth;
 
-            let topRow, bottomRow, leftCol, rightCol, tmpEntityBounds;
+            let topRow: number, bottomRow: number, leftCol: number, rightCol: number, tmpEntityBounds: PIXI.Rectangle;
 
             switch (direction) {
                 case BoxDirection.Top:
@@ -63,12 +63,13 @@ export default class CollisionController {
                     }
 
                     // Check collision with other polygons
-                    for (const poly of GameMap.PolyBlocks) {
+                    GameMap.PolyBlocks.forEach(poly => {
                         if (poly.BlockTypes & BlockTypes.BottomBlocked && poly.Polygon.intersectsRect(tmpEntityBounds)) {
                             // TODO: calculate polygon optimal value
                             return [true, 0];
                         }
-                    }
+                    });
+
                     break;
                 case BoxDirection.Bottom:
                     if (entityBounds.bottom + nextDistance >= GameMap.Height) {
@@ -93,11 +94,12 @@ export default class CollisionController {
                     }
 
                     // Check collision with other polygons
-                    for (const poly of GameMap.PolyBlocks) {
+                    GameMap.PolyBlocks.forEach(poly => {
                         if (poly.BlockTypes & BlockTypes.TopBlocked && poly.Polygon.intersectsRect(tmpEntityBounds)) {
                             return [true, 0];
                         }
-                    }
+                    });
+
                     break;
                 case BoxDirection.Left:
                     if (entityBounds.left + nextDistance <= 0) {
@@ -122,11 +124,12 @@ export default class CollisionController {
                     }
 
                     // Check collision with other polygons
-                    for (const poly of GameMap.PolyBlocks) {
+                    GameMap.PolyBlocks.forEach(poly => {
                         if (poly.BlockTypes & BlockTypes.RightBlocked && poly.Polygon.intersectsRect(tmpEntityBounds)) {
                             return [true, 0];
                         }
-                    }
+                    });
+
                     break;
                 case BoxDirection.Right:
                     if (entityBounds.right + nextDistance >= GameMap.Width) {
@@ -151,11 +154,12 @@ export default class CollisionController {
                     }
 
                     // Check collision with other polygons
-                    for (const poly of GameMap.PolyBlocks) {
+                    GameMap.PolyBlocks.forEach(poly => {
                         if (poly.BlockTypes & BlockTypes.LeftBlocked && poly.Polygon.intersectsRect(tmpEntityBounds)) {
                             return [true, 0];
                         }
-                    }
+                    });
+
                     break;
             }
         }

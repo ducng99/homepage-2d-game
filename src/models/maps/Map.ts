@@ -46,7 +46,7 @@ export default class GameMap {
         }
     }
 
-    Init(tilesetMgr: TilesetManager) {
+    Init() {
         const mapBlocks: MapBlock[] = [];
 
         const terrainLayer = this.MapInfo!.layers.find(layer => layer.name === "Terrain");
@@ -60,7 +60,7 @@ export default class GameMap {
                     mapBlocks.push(new MapBlock());
 
                     if (textureID > 0) {
-                        const sprite = new PIXI.Sprite(tilesetMgr.Textures[textureID - 1]);
+                        const sprite = new PIXI.Sprite(TilesetManager.Instance.Textures[textureID - 1]);
                         sprite.x = col * sprite.texture.width;
                         sprite.y = row * sprite.texture.height;
                         this.SpritesContainer.addChild(sprite);
@@ -71,13 +71,13 @@ export default class GameMap {
 
         const blocksCollisionsLayer = this.MapInfo!.layers.find(layer => layer.name === "BlocksCollisions");
         if (blocksCollisionsLayer && blocksCollisionsLayer.objects) {
-            for (const collBlock of blocksCollisionsLayer.objects) {
+            blocksCollisionsLayer.objects.forEach(collBlock => {
                 const mapBlockIndex = Math.floor(collBlock.y / this.MapInfo!.tileheight * this.MapInfo!.width + collBlock.x / this.MapInfo!.tilewidth);
 
                 if (mapBlockIndex < mapBlocks.length) {
                     mapBlocks[mapBlockIndex].Bounds = new PIXI.Rectangle(collBlock.x, collBlock.y, collBlock.width, collBlock.height);
                     if (collBlock.properties) {
-                        for (const prop of collBlock.properties) {
+                        collBlock.properties.forEach(prop => {
                             if (prop.name === MapProperty.TopBlocked && prop.value)
                                 mapBlocks[mapBlockIndex].BlockTypes |= BlockTypes.TopBlocked;
                             if (prop.name === MapProperty.BottomBlocked && prop.value)
@@ -86,19 +86,19 @@ export default class GameMap {
                                 mapBlocks[mapBlockIndex].BlockTypes |= BlockTypes.LeftBlocked;
                             if (prop.name === MapProperty.RightBlocked && prop.value)
                                 mapBlocks[mapBlockIndex].BlockTypes |= BlockTypes.RightBlocked;
-                        }
+                        });
                     }
                 }
-            }
+            });
         }
 
         const polyCollisionsLayer = this.MapInfo!.layers.find(layer => layer.name === "PolyCollisions");
         if (polyCollisionsLayer && polyCollisionsLayer.objects) {
-            for (const collBlock of polyCollisionsLayer.objects) {
+            polyCollisionsLayer.objects.forEach(collBlock => {
                 if (collBlock.polygon && collBlock.properties) {
                     const polyBlock = new PolygonBlock(new PIXI.Polygon(...collBlock.polygon.map(point => new PIXI.Point(point.x + collBlock.x, point.y + collBlock.y))));
 
-                    for (const prop of collBlock.properties) {
+                    collBlock.properties.forEach(prop => {
                         if (prop.name === MapProperty.TopBlocked && prop.value)
                             polyBlock.BlockTypes |= BlockTypes.TopBlocked;
                         if (prop.name === MapProperty.BottomBlocked && prop.value)
@@ -107,11 +107,11 @@ export default class GameMap {
                             polyBlock.BlockTypes |= BlockTypes.LeftBlocked;
                         if (prop.name === MapProperty.RightBlocked && prop.value)
                             polyBlock.BlockTypes |= BlockTypes.RightBlocked;
-                    }
+                    });
 
                     this.PolyBlocks.push(polyBlock);
                 }
-            }
+            });
         }
 
         return mapBlocks;
