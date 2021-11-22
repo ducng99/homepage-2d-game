@@ -16,6 +16,8 @@ export default class ParallaxBackground {
 
         GameBrain.Instance.MapManager.IsReady.addListener(callback);
 
+        // ! Specifically for the current map, shift background up a bit.
+        Renderer.Instance.BackgroundContainer.position.y -= 64 * 3;
         Renderer.Instance.BackgroundContainer.addChild(...this.Layers);
     }
 
@@ -37,9 +39,6 @@ export default class ParallaxBackground {
 
             for (let i = 0; i < spritesCount; i++) {
                 const sprite = new PIXI.Sprite(textures[layerIndex]);
-                
-                // ! Specifically for the current map, shift background up a bit.
-                sprite.position.y -= 64 * 3;
 
                 const ratio = textures[layerIndex].width / textures[layerIndex].height;
                 sprite.height = Renderer.Instance.App.screen.height;
