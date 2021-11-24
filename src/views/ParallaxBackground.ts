@@ -22,25 +22,28 @@ export default class ParallaxBackground {
     }
 
     private async Init() {
-        const textures: PIXI.Texture[] = [
-            await PIXI.Texture.fromURL('/assets/backgrounds/1.png'),
-            await PIXI.Texture.fromURL('/assets/backgrounds/2.png'),
-            await PIXI.Texture.fromURL('/assets/backgrounds/3.png'),
-            await PIXI.Texture.fromURL('/assets/backgrounds/5.png'),
+        const textures: PIXI.Texture[][] = [
+            [await PIXI.Texture.fromURL('/assets/backgrounds/layer1/1.png')],
+            [await PIXI.Texture.fromURL('/assets/backgrounds/layer2/1.png'), await PIXI.Texture.fromURL('/assets/backgrounds/layer2/2.png')],
+            [await PIXI.Texture.fromURL('/assets/backgrounds/layer3/1.png'), await PIXI.Texture.fromURL('/assets/backgrounds/layer3/2.png')],
+            [await PIXI.Texture.fromURL('/assets/backgrounds/layer4/1.png'), await PIXI.Texture.fromURL('/assets/backgrounds/layer4/2.png')]
         ];
 
         textures.forEach(t => {
-            t.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+            t.forEach(texture => {
+                texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+            });
         });
 
         // TODO: A better implementation would be to have enough sprites for each layer to fit the screen, and as one moves out of screen, it moves to the other side.
         for (let layerIndex = 0; layerIndex < this.Layers.length; layerIndex++) {
-            const spritesCount = Math.round(GameBrain.Instance.MapManager.Width / textures[layerIndex].width);
+            const spritesCount = Math.round(GameBrain.Instance.MapManager.Width / textures[layerIndex][0].width);
 
             for (let i = 0; i < spritesCount; i++) {
-                const sprite = new PIXI.Sprite(textures[layerIndex]);
+                const texture = textures[layerIndex][Math.random() * textures[layerIndex].length | 0];
+                const sprite = new PIXI.Sprite(texture);
 
-                const ratio = textures[layerIndex].width / textures[layerIndex].height;
+                const ratio = texture.width / texture.height;
                 sprite.height = Renderer.Instance.App.screen.height;
                 sprite.width = sprite.height * ratio;
                 sprite.position.x = i * sprite.width;
