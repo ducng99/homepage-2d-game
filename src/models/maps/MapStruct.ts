@@ -2,6 +2,7 @@
 
 export interface MapStruct {
     compressionlevel: number;
+    editorsettings:   Editorsettings;
     height:           number;
     infinite:         boolean;
     layers:           Layer[];
@@ -18,19 +19,29 @@ export interface MapStruct {
     width:            number;
 }
 
+export interface Editorsettings {
+    chunksize: Chunksize;
+}
+
+export interface Chunksize {
+    height: number;
+    width:  number;
+}
+
 export interface Layer {
-    data?:      number[];
-    height?:    number;
-    id:         number;
-    name:       string;
-    opacity:    number;
-    type:       string;
-    visible:    boolean;
-    width?:     number;
-    x:          number;
-    y:          number;
-    draworder?: string;
-    objects?:   Object[];
+    data?:       number[];
+    height?:     number;
+    id:          number;
+    name:        string;
+    opacity:     number;
+    type:        string;
+    visible:     boolean;
+    width?:      number;
+    x:           number;
+    y:           number;
+    draworder?:  string;
+    objects?:    Object[];
+    properties?: Property[];
 }
 
 export interface Object {
@@ -60,6 +71,7 @@ export interface Property {
 
 export enum Name {
     BottomBlocked = "bottom_blocked",
+    IsPie = "is_pie",
     LeftBlocked = "left_blocked",
     RightBlocked = "right_blocked",
     TopBlocked = "top_blocked",

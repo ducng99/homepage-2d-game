@@ -11,10 +11,10 @@ export enum BoxDirection {
 }
 
 export default class CollisionController {
-    private _entity: Entity & Collidable;
+    private readonly Entity: Collidable;
 
-    constructor(entity: Entity & Collidable) {
-        this._entity = entity;
+    constructor(entity: Collidable) {
+        this.Entity = entity;
     }
 
     /**
@@ -27,7 +27,7 @@ export default class CollisionController {
      * - the face optimal value before collision occurs
      */
     IsCollidingTerrain(direction: BoxDirection, nextDistance: number): [boolean, number] {
-        const entityBounds = this._entity.Bounds;
+        const entityBounds = this.Entity.Bounds;
         const GameMap = GameBrain.Instance.MapManager.GameMap;
         const TerrainBlocks = GameBrain.Instance.MapManager.TerrainBlocks;
 
@@ -41,7 +41,7 @@ export default class CollisionController {
                 case BoxDirection.Top:
                     // If outside of map, return true to prevent moving
                     if (entityBounds.top + nextDistance <= 0) {
-                        return [true, this._entity.Position.y];
+                        return [true, this.Entity.Position.y];
                     }
 
                     let topRowMin = Math.floor((entityBounds.top + nextDistance % tileHeight) / tileHeight);
@@ -73,7 +73,7 @@ export default class CollisionController {
                     break;
                 case BoxDirection.Bottom:
                     if (entityBounds.bottom + nextDistance >= GameMap.Height) {
-                        return [true, this._entity.Position.y];
+                        return [true, this.Entity.Position.y];
                     }
 
                     let bottomRowMin = Math.floor(entityBounds.bottom / tileHeight);
@@ -103,7 +103,7 @@ export default class CollisionController {
                     break;
                 case BoxDirection.Left:
                     if (entityBounds.left + nextDistance <= 0) {
-                        return [true, this._entity.Position.x];
+                        return [true, this.Entity.Position.x];
                     }
 
                     topRow = Math.round((entityBounds.top + 0.1) / tileHeight);
@@ -133,7 +133,7 @@ export default class CollisionController {
                     break;
                 case BoxDirection.Right:
                     if (entityBounds.right + nextDistance >= GameMap.Width) {
-                        return [true, this._entity.Position.x];
+                        return [true, this.Entity.Position.x];
                     }
 
                     topRow = Math.round((entityBounds.top + 0.1) / tileHeight);
@@ -165,5 +165,14 @@ export default class CollisionController {
         }
 
         return [false, 0];
+    }
+    
+    /**
+     * Checking whether the current entity is colliding with a target entity
+     * @param entity the target entity to check for collision
+     * @returns true if the entity is colliding with the target entity, false otherwise
+     */
+    IsCollidingWithEntity(entity: Collidable): boolean {
+        return entity.Bounds.intersects(this.Entity.Bounds);
     }
 }

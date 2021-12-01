@@ -10,29 +10,26 @@ export default class TilesetManager {
         return this._instance;
     }
 
+    readonly Textures: PIXI.Texture<PIXI.Resource>[] = [];
+
     private constructor() { }
 
-    private _textures: PIXI.Texture<PIXI.Resource>[] = [];
-    get Textures() {
-        return this._textures;
-    }
-
-    static async Load(jsonPath: string) {
-        const Loader = new PIXI.Loader;
+    async Load(jsonPath: string) {
+        const Loader = new PIXI.Loader();
 
         try {
             await new Promise(resolve => {
-                Loader.add(jsonPath).load(() => {
-                    const textures = Loader.resources[jsonPath].textures;
+                Loader.add(jsonPath).load((_, resources) => {
+                    const textures = resources[jsonPath].textures;
 
                     if (textures) {
                         Object.values(textures).forEach(texture => {
                             texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-                            this.Instance.Textures.push(texture);
+                            this.Textures.push(texture);
                         });
                     }
 
-                    resolve(0);
+                    resolve(undefined);
                 });
             });
         }

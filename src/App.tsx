@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import Renderer from './views/Renderer'
+import DebugView from './views/ui/DebugView';
 
 function App() {
     const [fps, setFPS] = useState(0);
@@ -16,7 +17,10 @@ function App() {
 
     return (
         <div className="App">
-            <div style={{ position: 'fixed', top: 10, left: 10, color: 'white', zIndex: 2 }}>FPS: {fps}</div>
+            <div style={{ position: 'fixed', top: 10, left: 10, color: 'white', zIndex: 2 }}>
+                FPS: {fps}
+                <DebugView />
+            </div>
         </div>
     )
 }

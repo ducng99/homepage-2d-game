@@ -1,16 +1,11 @@
-import { MapStruct } from './MapStruct'
+import { MapStruct, Name as MapProperty } from './MapStruct'
 import TilesetManager from './TilesetManager'
 import * as PIXI from 'pixi.js'
 import MapBlock from './MapBlock'
 import BlockTypes from './BlockTypes';
 import PolygonBlock from './PolygonBlock'
-
-const MapProperty = {
-    TopBlocked: "top_blocked",
-    BottomBlocked: "bottom_blocked",
-    LeftBlocked: "left_blocked",
-    RightBlocked: "right_blocked"
-}
+import Pie from '../entities/interactables/Pie'
+import Interactable from '../extensions/Interactable';
 
 export default class GameMap {
     private constructor() { }
@@ -18,18 +13,23 @@ export default class GameMap {
     private _mapInfo?: MapStruct;
     get MapInfo() { return this._mapInfo }
 
+    /**
+     * Get map's height in pixels
+     */
     get Height() {
         return (this.MapInfo?.height ?? 0) * (this.MapInfo?.tileheight ?? 0);
     }
+
+    /**
+     * Get map's width in pixels
+     */
     get Width() {
         return (this.MapInfo?.width ?? 0) * (this.MapInfo?.tilewidth ?? 0);
     }
 
-    private _spritesContainer: PIXI.ParticleContainer = new PIXI.ParticleContainer(1500, {});
-    get SpritesContainer() { return this._spritesContainer }
-
-    private _polyBlocks: PolygonBlock[] = []
-    get PolyBlocks() { return this._polyBlocks }
+    readonly SpritesContainer: PIXI.ParticleContainer = new PIXI.ParticleContainer(1500, {});
+    readonly PolyBlocks: PolygonBlock[] = [];
+    readonly InteractableObjects: Interactable[] = [];
 
     static async Load(jsonPath: string) {
         const instance = new GameMap;
@@ -110,6 +110,23 @@ export default class GameMap {
                     });
 
                     this.PolyBlocks.push(polyBlock);
+                }
+            });
+        }
+
+        const interactableObjsLayer = this.MapInfo!.layers.find(layer => layer.name === "InteractableObjects");
+        if (interactableObjsLayer && interactableObjsLayer.objects) {
+            interactableObjsLayer.objects.forEach(obj => {
+                if (obj.properties) {
+                    obj.properties.forEach(prop => {
+                        if (prop.name === MapProperty.IsPie && prop.value) {
+                            const pie = new Pie;
+                            pie.Position.x = obj.x;
+                            pie.Position.y = obj.y;
+                            
+                            this.InteractableObjects.push(pie);
+                        }
+                    });
                 }
             });
         }

@@ -1,4 +1,4 @@
-import Player from '../models/Player';
+import Player from '../models/entities/Player';
 import Renderer from '../views/Renderer';
 import MoveController from './MoveController'
 

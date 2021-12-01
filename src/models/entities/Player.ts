@@ -1,15 +1,20 @@
-import { BoxDirection } from '../controllers/CollisionController'
-import Movable, { HorizontalDirection } from './extensions/Movable'
-import Collidable from './extensions/Collidable'
+import { BoxDirection } from '../../controllers/CollisionController'
+import Movable, { HorizontalDirection } from '../extensions/Movable'
+import Collidable from '../extensions/Collidable'
 import { Mixin } from 'ts-mixer'
-import Renderer from '../views/Renderer'
-import PlayerMoveController from '../controllers/PlayerMoveController'
+import Renderer from '../../views/Renderer'
+import PlayerMoveController from '../../controllers/PlayerMoveController'
+import ScoreManager from '../ScoreManager'
+import GameBrain from '../GameBrain'
+import Interactable from '../extensions/Interactable'
 
 export enum PlayerState {
     Standing, Running, Jumping
 }
 
 export default class Player extends Mixin(Movable, Collidable) {
+    readonly ScoreManager = new ScoreManager;
+    
     State: PlayerState;
 
     constructor() {
@@ -24,6 +29,10 @@ export default class Player extends Mixin(Movable, Collidable) {
     }
 
     Update() {
+        if (!GameBrain.Instance.MapManager.IsReady.Value) {
+            return;
+        }
+        
         // Update player view to flip to the right direction and update it
         if (this.View) {
             this.View.FlipX.Value = this.Direction === HorizontalDirection.Left;
@@ -39,6 +48,9 @@ export default class Player extends Mixin(Movable, Collidable) {
 
         // Update animations
         this.UpdateAnimation();
+        
+        // Check interactions with other entities
+        this.CheckInteractionsAndTrigger();
     }
 
     private UpdatePosition() {
@@ -105,5 +117,15 @@ export default class Player extends Mixin(Movable, Collidable) {
                     break;
             }
         }
+    }
+    
+    private CheckInteractionsAndTrigger() {
+        GameBrain.Instance.MapManager.GameMap?.InteractableObjects.forEach(entity => {
+            if (entity instanceof Interactable) {
+                const interEntity = entity as Interactable;
+                
+                interEntity.Interact(this);
+            }
+        });
     }
 }

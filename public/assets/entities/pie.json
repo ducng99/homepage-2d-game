@@ -1,0 +1,20 @@
+{"frames": {
+
+"42_eggtart.png":
+{
+	"frame": {"x":0,"y":0,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "pie.png",
+	"format": "RGBA8888",
+	"size": {"w":32,"h":32},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:1081a7ebddf3cf6928314ef0c75cb0f6:89f4525656d4b67e2d2ea00e8e023d23:1e9337f39878714d1dc0ea38d89d6b16$"
+}
+}

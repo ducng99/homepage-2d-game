@@ -43,7 +43,7 @@ export default class EntityView {
     }
 
     static async Load(entity: Entity, jsonPath: string) {
-        const instance = new EntityView(entity);
+        const instance = new EntityView(entity);        
         const Loader = new PIXI.Loader;
 
         try {
@@ -94,5 +94,9 @@ export default class EntityView {
         }
 
         this.CurrentSprite.position.set(this.Entity.Position.x, this.Entity.Position.y);
+    }
+    
+    Destroy() {
+        Renderer.Instance.EntitiesContainer.removeChild(this.CurrentSprite);
     }
 }

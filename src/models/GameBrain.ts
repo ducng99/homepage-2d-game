@@ -1,6 +1,6 @@
 import InputHandler from "../InputHandler"
 import MapManager from "./maps/MapManager"
-import Player from "./Player"
+import Player from "./entities/Player"
 import Entity from "./Entity"
 
 export default class GameBrain {
@@ -27,10 +27,7 @@ export default class GameBrain {
         return this._mapManager;
     }
 
-    private _entitiesList: Entity[] = [];
-    get EntitiesList() {
-        return this._entitiesList;
-    }
+    readonly EntitiesList: Entity[] = [];
 
     private constructor() {
         this._player = new Player;
@@ -41,8 +38,8 @@ export default class GameBrain {
     Update() {
         InputHandler.Instance.Handle();
 
-        for (let i = 0; i < this.EntitiesList.length; i++) {
-            this.EntitiesList[i].Update();
-        }
+        this.EntitiesList.forEach(entity => {
+            entity.Update();
+        });
     }
 }
