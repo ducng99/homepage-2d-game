@@ -120,7 +120,7 @@ export default class Player extends Mixin(Movable, Collidable) {
     }
     
     private CheckInteractionsAndTrigger() {
-        GameBrain.Instance.MapManager.GameMap?.InteractableObjects.forEach(entity => {
+        GameBrain.Instance.MapManager.InteractableObjects.forEach(entity => {
             if (entity instanceof Interactable) {
                 const interEntity = entity as Interactable;
                 

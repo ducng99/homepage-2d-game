@@ -28,8 +28,6 @@ export default class GameMap {
     }
 
     readonly SpritesContainer: PIXI.ParticleContainer = new PIXI.ParticleContainer(1500, {});
-    readonly PolyBlocks: PolygonBlock[] = [];
-    readonly InteractableObjects: Interactable[] = [];
 
     static async Load(jsonPath: string) {
         const instance = new GameMap;
@@ -46,8 +44,10 @@ export default class GameMap {
         }
     }
 
-    Init() {
+    Init(): [MapBlock[], PolygonBlock[], Interactable[]] {
         const mapBlocks: MapBlock[] = [];
+        const polyBlocks: PolygonBlock[] = [];
+        const interactableObjs: Interactable[] = [];
 
         const terrainLayer = this.MapInfo!.layers.find(layer => layer.name === "Terrain");
         if (terrainLayer && terrainLayer.data && terrainLayer.height) {
@@ -109,7 +109,7 @@ export default class GameMap {
                             polyBlock.BlockTypes |= BlockTypes.RightBlocked;
                     });
 
-                    this.PolyBlocks.push(polyBlock);
+                    polyBlocks.push(polyBlock);
                 }
             });
         }
@@ -124,13 +124,13 @@ export default class GameMap {
                             pie.Position.x = obj.x;
                             pie.Position.y = obj.y;
                             
-                            this.InteractableObjects.push(pie);
+                            interactableObjs.push(pie);
                         }
                     });
                 }
             });
         }
 
-        return mapBlocks;
+        return [mapBlocks, polyBlocks, interactableObjs];
     }
 }

@@ -30,6 +30,7 @@ export default class CollisionController {
         const entityBounds = this.Entity.Bounds;
         const GameMap = GameBrain.Instance.MapManager.GameMap;
         const TerrainBlocks = GameBrain.Instance.MapManager.TerrainBlocks;
+        const PolyBlocks = GameBrain.Instance.MapManager.PolyBlocks;
 
         if (GameMap && GameMap.MapInfo) {
             const tileHeight = GameMap.MapInfo.tileheight;
@@ -63,7 +64,7 @@ export default class CollisionController {
                     }
 
                     // Check collision with other polygons
-                    GameMap.PolyBlocks.forEach(poly => {
+                    PolyBlocks.forEach(poly => {
                         if (poly.BlockTypes & BlockTypes.BottomBlocked && poly.Polygon.intersectsRect(tmpEntityBounds)) {
                             // TODO: calculate polygon optimal value
                             return [true, 0];
@@ -94,7 +95,7 @@ export default class CollisionController {
                     }
 
                     // Check collision with other polygons
-                    GameMap.PolyBlocks.forEach(poly => {
+                    PolyBlocks.forEach(poly => {
                         if (poly.BlockTypes & BlockTypes.TopBlocked && poly.Polygon.intersectsRect(tmpEntityBounds)) {
                             return [true, 0];
                         }
@@ -124,7 +125,7 @@ export default class CollisionController {
                     }
 
                     // Check collision with other polygons
-                    GameMap.PolyBlocks.forEach(poly => {
+                    PolyBlocks.forEach(poly => {
                         if (poly.BlockTypes & BlockTypes.RightBlocked && poly.Polygon.intersectsRect(tmpEntityBounds)) {
                             return [true, 0];
                         }
@@ -154,7 +155,7 @@ export default class CollisionController {
                     }
 
                     // Check collision with other polygons
-                    GameMap.PolyBlocks.forEach(poly => {
+                    PolyBlocks.forEach(poly => {
                         if (poly.BlockTypes & BlockTypes.LeftBlocked && poly.Polygon.intersectsRect(tmpEntityBounds)) {
                             return [true, 0];
                         }
