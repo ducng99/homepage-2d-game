@@ -55,10 +55,10 @@ export interface Object {
     width:       number;
     x:           number;
     y:           number;
-    polygon?:    Polygon[];
+    polyline?:   Polyline[];
 }
 
-export interface Polygon {
+export interface Polyline {
     x: number;
     y: number;
 }

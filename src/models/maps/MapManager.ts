@@ -4,7 +4,7 @@ import TilesetManager from './TilesetManager'
 import MapBlock from './MapBlock'
 import Observable from '../../utils/Observable';
 import Interactable from '../extensions/Interactable';
-import PolygonBlock from './PolygonBlock'
+import LineBlock from './LineBlock'
 
 export default class MapManager {
     private _gameMap?: GameMap;
@@ -15,9 +15,9 @@ export default class MapManager {
         return this._terrainBlocks;
     }
     
-    private _polyBlocks: PolygonBlock[] = [];
-    get PolyBlocks() {
-        return this._polyBlocks;
+    private _lineBlocks: LineBlock[] = [];
+    get LineBlocks() {
+        return this._lineBlocks;
     }
     
     private _interactableObjects: Interactable[] = [];
@@ -39,7 +39,7 @@ export default class MapManager {
         await TilesetManager.Instance.Load('/assets/maps/residential.json');
         
         this._gameMap = await GameMap.Load('/assets/maps/map1.json');
-        [this._terrainBlocks, this._polyBlocks, this._interactableObjects] = this._gameMap.Init();
+        [this._terrainBlocks, this._lineBlocks, this._interactableObjects] = this._gameMap.Init();
 
         Renderer.Instance.MapContainer.addChild(this._gameMap.SpritesContainer);
         this.IsReady.Value = true;

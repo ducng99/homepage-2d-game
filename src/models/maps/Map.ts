@@ -3,9 +3,10 @@ import TilesetManager from './TilesetManager'
 import * as PIXI from 'pixi.js'
 import MapBlock from './MapBlock'
 import BlockTypes from './BlockTypes';
-import PolygonBlock from './PolygonBlock'
+import LineBlock from './LineBlock'
 import Pie from '../entities/interactables/Pie'
 import Interactable from '../extensions/Interactable';
+import Line from '../../utils/Line'
 
 export default class GameMap {
     private constructor() { }
@@ -44,9 +45,9 @@ export default class GameMap {
         }
     }
 
-    Init(): [MapBlock[], PolygonBlock[], Interactable[]] {
+    Init(): [MapBlock[], LineBlock[], Interactable[]] {
         const mapBlocks: MapBlock[] = [];
-        const polyBlocks: PolygonBlock[] = [];
+        const lineBlocks: LineBlock[] = [];
         const interactableObjs: Interactable[] = [];
 
         const terrainLayer = this.MapInfo!.layers.find(layer => layer.name === "Terrain");
@@ -92,24 +93,25 @@ export default class GameMap {
             });
         }
 
-        const polyCollisionsLayer = this.MapInfo!.layers.find(layer => layer.name === "PolyCollisions");
-        if (polyCollisionsLayer && polyCollisionsLayer.objects) {
-            polyCollisionsLayer.objects.forEach(collBlock => {
-                if (collBlock.polygon && collBlock.properties) {
-                    const polyBlock = new PolygonBlock(new PIXI.Polygon(...collBlock.polygon.map(point => new PIXI.Point(point.x + collBlock.x, point.y + collBlock.y))));
+        const lineCollisionsLayer = this.MapInfo!.layers.find(layer => layer.name === "LineCollisions");
+        if (lineCollisionsLayer && lineCollisionsLayer.objects) {
+            lineCollisionsLayer.objects.forEach(collBlock => {
+                if (collBlock.polyline && collBlock.properties) {
+                    const points = collBlock.polyline.map(point => new PIXI.Point(point.x + collBlock.x, point.y + collBlock.y));
+                    const lineBlock = new LineBlock(new Line(points[0], points[1]));
 
                     collBlock.properties.forEach(prop => {
                         if (prop.name === MapProperty.TopBlocked && prop.value)
-                            polyBlock.BlockTypes |= BlockTypes.TopBlocked;
+                            lineBlock.BlockTypes |= BlockTypes.TopBlocked;
                         if (prop.name === MapProperty.BottomBlocked && prop.value)
-                            polyBlock.BlockTypes |= BlockTypes.BottomBlocked;
+                            lineBlock.BlockTypes |= BlockTypes.BottomBlocked;
                         if (prop.name === MapProperty.LeftBlocked && prop.value)
-                            polyBlock.BlockTypes |= BlockTypes.LeftBlocked;
+                            lineBlock.BlockTypes |= BlockTypes.LeftBlocked;
                         if (prop.name === MapProperty.RightBlocked && prop.value)
-                            polyBlock.BlockTypes |= BlockTypes.RightBlocked;
+                            lineBlock.BlockTypes |= BlockTypes.RightBlocked;
                     });
 
-                    polyBlocks.push(polyBlock);
+                    lineBlocks.push(lineBlock);
                 }
             });
         }
@@ -131,6 +133,6 @@ export default class GameMap {
             });
         }
 
-        return [mapBlocks, polyBlocks, interactableObjs];
+        return [mapBlocks, lineBlocks, interactableObjs];
     }
 }

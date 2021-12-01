@@ -2,6 +2,7 @@ import Collidable from "../models/extensions/Collidable";
 import * as PIXI from 'pixi.js'
 import GameBrain from "../models/GameBrain";
 import BlockTypes from "../models/maps/BlockTypes";
+import Line from "../utils/Line";
 
 export enum BoxDirection {
     Top, Bottom, Left, Right
@@ -27,13 +28,16 @@ export default class CollisionController {
         const entityBounds = this.Entity.Bounds;
         const GameMap = GameBrain.Instance.MapManager.GameMap;
         const TerrainBlocks = GameBrain.Instance.MapManager.TerrainBlocks;
-        const PolyBlocks = GameBrain.Instance.MapManager.PolyBlocks;
+        const LineBlocks = GameBrain.Instance.MapManager.LineBlocks;
 
         if (GameMap && GameMap.MapInfo) {
             const tileHeight = GameMap.MapInfo.tileheight;
             const tileWidth = GameMap.MapInfo.tilewidth;
 
-            let topRow: number, bottomRow: number, leftCol: number, rightCol: number, tmpEntityBounds: PIXI.Rectangle;
+            let topRow: number, bottomRow: number, leftCol: number, rightCol: number;
+            let topPoint: PIXI.Point, bottomPoint: PIXI.Point, leftPoint: PIXI.Point, rightPoint: PIXI.Point;
+            let playerCollisionLine: Line;
+            let tmpEntityBounds: PIXI.Rectangle;
 
             switch (direction) {
                 case BoxDirection.Top:
@@ -60,13 +64,17 @@ export default class CollisionController {
                         }
                     }
 
-                    // Check collision with other polygons
-                    PolyBlocks.forEach(poly => {
-                        if (poly.BlockTypes & BlockTypes.BottomBlocked && poly.Polygon.intersectsRect(tmpEntityBounds)) {
-                            // TODO: calculate polygon optimal value
-                            return [true, 0];
+                    // Check collision with other lines
+                    topPoint = new PIXI.Point(tmpEntityBounds.width / 2 + tmpEntityBounds.left, tmpEntityBounds.top + nextDistance);
+                    bottomPoint = new PIXI.Point(tmpEntityBounds.width / 2 + tmpEntityBounds.left, tmpEntityBounds.bottom);
+                    playerCollisionLine = new Line(topPoint, bottomPoint);
+
+                    for (let i = 0; i < LineBlocks.length; i++) {
+                        const [isIntersect, intersectionPoint] = LineBlocks[i].Line.intersects(playerCollisionLine);
+                        if (LineBlocks[i].BlockTypes & BlockTypes.BottomBlocked && isIntersect) {
+                            return [true, intersectionPoint.y];
                         }
-                    });
+                    };
 
                     break;
                 case BoxDirection.Bottom:
@@ -91,12 +99,17 @@ export default class CollisionController {
                         }
                     }
 
-                    // Check collision with other polygons
-                    PolyBlocks.forEach(poly => {
-                        if (poly.BlockTypes & BlockTypes.TopBlocked && poly.Polygon.intersectsRect(tmpEntityBounds)) {
-                            return [true, 0];
+                    // Check collision with other lines
+                    topPoint = new PIXI.Point(tmpEntityBounds.width / 2 + tmpEntityBounds.left, tmpEntityBounds.top);
+                    bottomPoint = new PIXI.Point(tmpEntityBounds.width / 2 + tmpEntityBounds.left, tmpEntityBounds.bottom + nextDistance);
+                    playerCollisionLine = new Line(topPoint, bottomPoint);
+
+                    for (let i = 0; i < LineBlocks.length; i++) {
+                        const [isIntersect, intersectionPoint] = LineBlocks[i].Line.intersects(playerCollisionLine);
+                        if (LineBlocks[i].BlockTypes & BlockTypes.TopBlocked && isIntersect) {
+                            return [true, intersectionPoint.y - entityBounds.height];
                         }
-                    });
+                    };
 
                     break;
                 case BoxDirection.Left:
@@ -121,12 +134,17 @@ export default class CollisionController {
                         }
                     }
 
-                    // Check collision with other polygons
-                    PolyBlocks.forEach(poly => {
-                        if (poly.BlockTypes & BlockTypes.RightBlocked && poly.Polygon.intersectsRect(tmpEntityBounds)) {
-                            return [true, 0];
+                    // Check collision with other lines
+                    leftPoint = new PIXI.Point(tmpEntityBounds.left + nextDistance, tmpEntityBounds.height / 2 + tmpEntityBounds.top);
+                    rightPoint = new PIXI.Point(tmpEntityBounds.right, tmpEntityBounds.height / 2 + tmpEntityBounds.top);
+                    playerCollisionLine = new Line(leftPoint, rightPoint);
+
+                    for (let i = 0; i < LineBlocks.length; i++) {
+                        const [isIntersect, intersectionPoint] = LineBlocks[i].Line.intersects(playerCollisionLine);
+                        if (LineBlocks[i].BlockTypes & BlockTypes.RightBlocked && isIntersect) {
+                            return [true, intersectionPoint.x + entityBounds.width / 2];
                         }
-                    });
+                    };
 
                     break;
                 case BoxDirection.Right:
@@ -151,12 +169,17 @@ export default class CollisionController {
                         }
                     }
 
-                    // Check collision with other polygons
-                    PolyBlocks.forEach(poly => {
-                        if (poly.BlockTypes & BlockTypes.LeftBlocked && poly.Polygon.intersectsRect(tmpEntityBounds)) {
-                            return [true, 0];
+                    // Check collision with other lines
+                    leftPoint = new PIXI.Point(tmpEntityBounds.left, tmpEntityBounds.height / 2 + tmpEntityBounds.top);
+                    rightPoint = new PIXI.Point(tmpEntityBounds.right + nextDistance, tmpEntityBounds.height / 2 + tmpEntityBounds.top);
+                    playerCollisionLine = new Line(leftPoint, rightPoint);
+
+                    for (let i = 0; i < LineBlocks.length; i++) {
+                        const [isIntersect, intersectionPoint] = LineBlocks[i].Line.intersects(playerCollisionLine);
+                        if (LineBlocks[i].BlockTypes & BlockTypes.LeftBlocked && isIntersect) {
+                            return [true, intersectionPoint.x - entityBounds.width / 2];
                         }
-                    });
+                    };
 
                     break;
             }
@@ -164,7 +187,7 @@ export default class CollisionController {
 
         return [false, 0];
     }
-    
+
     /**
      * Checking whether the current entity is colliding with a target entity
      * @param entity the target entity to check for collision
