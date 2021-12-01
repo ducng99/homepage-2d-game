@@ -1,15 +1,11 @@
 import Collidable from "../../extensions/Collidable";
-import Interactable from "../../extensions/Interactable";
+import Interactable, { IOnInteractCallback } from "../../extensions/Interactable";
 import GameBrain from "../../GameBrain";
 import Player from "../Player";
 
 export default class Pie extends Interactable {
+    protected OnInteract: IOnInteractCallback;
     static readonly VALUE = 10;
-    
-    private _interacted = false;
-    get Interacted() {
-        return this._interacted;
-    }
     
     constructor() {
         super();
@@ -21,21 +17,22 @@ export default class Pie extends Interactable {
     }
     
     Update() {
-        if (!this.Interacted && this.View) {
+        if (this.View) {
             this.View.Update();
         }
     }
     
     private OnInteractCallback(entity: Collidable) {
-        this.RemoveCallback();
-        
-        this._interacted = true;
-        this.View?.Destroy();
-        
         if (entity instanceof Player) {
-            const player = entity as Player;
+            this.Destroy();
             
+            const player = entity as Player;
             player.ScoreManager.AddScore(Pie.VALUE);
         }
+    }
+    
+    private Destroy() {
+        GameBrain.Instance.EntitiesList.remove(this);
+        this.View?.Destroy();
     }
 }

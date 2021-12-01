@@ -1,19 +1,13 @@
 import Collidable from "./Collidable";
 
-interface IOnInteractCallback {
+export interface IOnInteractCallback {
     (entity: Collidable): void;
 }
 
 export default abstract class Interactable extends Collidable {
-    private _onInteract?: IOnInteractCallback;
+    protected abstract OnInteract: IOnInteractCallback;
     
-    protected set OnInteract(callback: IOnInteractCallback) {
-        this._onInteract = callback;
-    }
-    
-    protected RemoveCallback() {
-        this._onInteract = undefined;
-    }
+    protected _interacted = false;
     
     /**
      * Trigger interact event if the target entity is interactable and colliding with this entity
@@ -21,8 +15,9 @@ export default abstract class Interactable extends Collidable {
      * @returns true if the entity is interacted, false otherwise
      */
     Interact(entity: Collidable) {
-        if (this._onInteract && this.CollisionController.IsCollidingWithEntity(entity)) {
-            this._onInteract(entity);
+        if (!this._interacted && this.CollisionController.IsCollidingWithEntity(entity)) {
+            this.OnInteract(entity);
+            this._interacted = true;
             return true;
         }
         

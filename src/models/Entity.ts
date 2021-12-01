@@ -7,7 +7,10 @@ export default abstract class Entity {
         return this._position;
     }
 
-    View?: EntityView;
+    private _view?: EntityView;
+    get View() {
+        return this._view;
+    }
 
     constructor() {
         this._position = new Vector2();
@@ -15,7 +18,7 @@ export default abstract class Entity {
     
     InitEntityView(jsonFilePath: string) {
         EntityView.Load(this, jsonFilePath).then(view => {
-            this.View = view;
+            this._view = view;
         });
     }
 
