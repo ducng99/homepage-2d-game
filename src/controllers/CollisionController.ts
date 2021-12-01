@@ -1,10 +1,7 @@
-import Entity from "../models/Entity";
 import Collidable from "../models/extensions/Collidable";
 import * as PIXI from 'pixi.js'
 import GameBrain from "../models/GameBrain";
 import BlockTypes from "../models/maps/BlockTypes";
-import '../utils/RectangleExtra'
-import '../utils/PolygonExtra'
 
 export enum BoxDirection {
     Top, Bottom, Left, Right

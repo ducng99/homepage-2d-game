@@ -21,9 +21,7 @@ export default class InputHandler {
     }
 
     OnKeyUp(key: string) {
-        let i = this.KeysDown.indexOf(key);
-        if (i !== -1)
-            this.KeysDown.splice(i, 1);
+        this.KeysDown.remove(key);
     }
 
     Handle() {

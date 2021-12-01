@@ -3,7 +3,7 @@ import Observable from "../utils/Observable";
 export default class ScoreManager {
     private _score = new Observable(0);
     
-    get Score(): Observable<number> {
+    get Score() {
         return this._score;
     }
     
