@@ -18,7 +18,7 @@ export default class ParallaxBackground {
 
         // ! Specifically for the current map, shift background up a bit.
         Renderer.Instance.BackgroundContainer.position.y -= 64 * 3;
-        Renderer.Instance.BackgroundContainer.addChild(...this.Layers);
+        Renderer.Instance.BackgroundContainer.addChild(this.Layers[0], this.Layers[1], this.Layers[2], this.Layers[3]);
     }
 
     private async Init() {
