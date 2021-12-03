@@ -28,7 +28,7 @@ export default class GameMap {
         return (this.MapInfo?.width ?? 0) * (this.MapInfo?.tilewidth ?? 0);
     }
 
-    readonly SpritesContainer: PIXI.ParticleContainer = new PIXI.ParticleContainer(1500, {});
+    readonly SpritesContainer: PIXI.Container = new PIXI.Container;
 
     static async Load(jsonPath: string) {
         const instance = new GameMap;
@@ -52,14 +52,28 @@ export default class GameMap {
 
         const terrainLayer = this.MapInfo!.layers.find(layer => layer.name === "Terrain");
         if (terrainLayer && terrainLayer.data && terrainLayer.height) {
-            const data = [...terrainLayer.data];   // splice will modify the original array -> create copy
-
             for (let row = 0; row < terrainLayer.height; row++) {
-                const rowData = data.splice(0, terrainLayer.width);
+                const rowData = terrainLayer.data.splice(0, terrainLayer.width);
 
                 rowData.forEach((textureID, col) => {
                     mapBlocks.push(new MapBlock());
 
+                    if (textureID > 0) {
+                        const sprite = new PIXI.Sprite(TilesetManager.Instance.Textures[textureID - 1]);
+                        sprite.x = col * sprite.texture.width;
+                        sprite.y = row * sprite.texture.height;
+                        this.SpritesContainer.addChild(sprite);
+                    }
+                });
+            }
+        }
+        
+        const backgroundLayer = this.MapInfo!.layers.find(layer => layer.name === "Background");
+        if (backgroundLayer && backgroundLayer.data && backgroundLayer.height) {
+            for (let row = 0; row < backgroundLayer.height; row++) {
+                const rowData = backgroundLayer.data.splice(0, backgroundLayer.width);
+
+                rowData.forEach((textureID, col) => {
                     if (textureID > 0) {
                         const sprite = new PIXI.Sprite(TilesetManager.Instance.Textures[textureID - 1]);
                         sprite.x = col * sprite.texture.width;
