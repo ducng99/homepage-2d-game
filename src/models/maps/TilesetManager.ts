@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import SpriteSheetManager from '../../utils/SpriteSheetManager';
 
 export default class TilesetManager {
     private static _instance: TilesetManager;
@@ -15,23 +16,16 @@ export default class TilesetManager {
     private constructor() { }
 
     async Load(jsonPath: string) {
-        const Loader = new PIXI.Loader();
-
         try {
-            await new Promise(resolve => {
-                Loader.add(jsonPath).load((_, resources) => {
-                    const textures = resources[jsonPath].textures;
+            const resources = await SpriteSheetManager.Instance.Load(jsonPath);
+            const textures = resources.textures;
 
-                    if (textures) {
-                        Object.values(textures).forEach(texture => {
-                            texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-                            this.Textures.push(texture);
-                        });
-                    }
-
-                    resolve(undefined);
+            if (textures) {
+                Object.values(textures).forEach(texture => {
+                    texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+                    this.Textures.push(texture);
                 });
-            });
+            }
         }
         catch (error) {
             console.error(`Failed when loading texture from ${jsonPath}`);

@@ -3,6 +3,7 @@ import * as PIXI from 'pixi.js'
 import AnimationsManager from './AnimationsManager'
 import Renderer from './Renderer';
 import Observable from '../utils/Observable'
+import SpriteSheetManager from '../utils/SpriteSheetManager'
 
 export default class EntityView {
     private readonly Entity: Entity;
@@ -43,31 +44,25 @@ export default class EntityView {
     }
 
     static async Load(entity: Entity, jsonPath: string) {
-        const instance = new EntityView(entity);        
-        const Loader = new PIXI.Loader;
+        const instance = new EntityView(entity);
 
         try {
-            await new Promise(resolve => {
-                Loader.add(jsonPath).load(() => {
-                    const textures = Loader.resources[jsonPath].textures;
-                    instance.AnimationsManager = new AnimationsManager(Loader.resources[jsonPath].spritesheet?.animations);
+            const resources = await SpriteSheetManager.Instance.Load(jsonPath);
+            const textures = resources.textures;
+            instance.AnimationsManager = new AnimationsManager(resources.spritesheet?.animations);
 
-                    if (textures) {
-                        Object.values(textures).forEach(texture => {
-                            texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+            if (textures) {
+                Object.values(textures).forEach(texture => {
+                    texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
 
-                            // Init first sprite
-                            if (!instance.DefaultTexture) {
-                                instance.DefaultTexture = texture;
-                            }
-
-                            instance.Textures.push(texture);
-                        });
+                    // Init first sprite
+                    if (!instance.DefaultTexture) {
+                        instance.DefaultTexture = texture;
                     }
 
-                    resolve(0);
+                    instance.Textures.push(texture);
                 });
-            });
+            }
         }
         catch (error) {
             console.error(`Failed when loading texture from ${jsonPath}`);
@@ -79,7 +74,7 @@ export default class EntityView {
 
     Update() {
         let textureApplied = false;
-        
+
         if (this.AnimationsManager) {
             this.AnimationsManager.Update();
 
@@ -88,14 +83,14 @@ export default class EntityView {
                 textureApplied = true;
             }
         }
-        
+
         if (!textureApplied && this.DefaultTexture) {
             this.CurrentSprite.texture = this.DefaultTexture;
         }
 
         this.CurrentSprite.position.set(this.Entity.Position.x, this.Entity.Position.y);
     }
-    
+
     Destroy() {
         Renderer.Instance.EntitiesContainer.removeChild(this.CurrentSprite);
     }
