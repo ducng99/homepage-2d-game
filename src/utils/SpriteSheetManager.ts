@@ -11,12 +11,12 @@ export default class SpriteSheetManager {
         return this._instance;
     }
     
+    private readonly Loader = new PIXI.Loader();
+    
     private LoadedSpriteSheets: { [filePath: string]: PIXI.LoaderResource } = {};
     
-    async Load(filePath: string) {
-        const loader = PIXI.Loader.shared;
-        
-        while (loader.loading) {
+    async Load(filePath: string) {        
+        while (this.Loader.loading) {
             await Sleep(10);
         }
         
@@ -25,7 +25,7 @@ export default class SpriteSheetManager {
         }
         
         const resource = await new Promise<PIXI.LoaderResource>(resolve => {
-            loader.add(filePath).load((_, resources) => {
+            this.Loader.add(filePath).load((_, resources) => {
                 resolve(resources[filePath]);
             });
         });
