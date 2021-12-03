@@ -21,7 +21,7 @@ export default class Player extends Mixin(Movable, Collidable) {
         super();
         this.State = PlayerState.Standing;
         this.MaxHorizontalSpeed = 4;
-        this.MaxUpSpeed = 30;
+        this.MaxUpSpeed = 25;
         this.Position.x = 100;
         this.MoveController = new PlayerMoveController(this);
 

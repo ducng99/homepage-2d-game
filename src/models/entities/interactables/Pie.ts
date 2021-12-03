@@ -9,7 +9,6 @@ export default class Pie extends Interactable {
     
     constructor() {
         super();
-        // TODO: replace temp texture
         this.InitEntityView('/assets/entities/pie.json');
         this.OnInteract = this.OnInteractCallback.bind(this);
         
