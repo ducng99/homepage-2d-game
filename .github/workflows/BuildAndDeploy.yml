@@ -40,7 +40,7 @@ jobs:
           # The name of the directory that containing the content to be published
           dir: 'dist'
           # The name of the remote branch that publishing source for GitHub Pages site
-          branch: 'master'
+          branch: 'main'
           # The remote repository that publishing source for GitHub Pages site, defaults to current repo and is formatted like 'user/repo-name'
           repo: 'ducng99/ducng99.github.io'
           # The personal access token that authorize repo access
