@@ -42,6 +42,6 @@ jobs:
           # The name of the remote branch that publishing source for GitHub Pages site
           branch: 'master'
           # The remote repository that publishing source for GitHub Pages site, defaults to current repo and is formatted like 'user/repo-name'
-          repo: 'ducng99.github.io'
+          repo: 'ducng99/ducng99.github.io'
           # The personal access token that authorize repo access
           token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
