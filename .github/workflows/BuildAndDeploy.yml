@@ -1,0 +1,47 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Build and Deploy to GitHub Page
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      
+      # Setup node
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      
+      # Build project
+      - run: npm ci
+      - run: npm run build
+      
+      - name: Publish to GitHub Pages
+        uses: tsunematsu21/actions-publish-gh-pages@v1.0.2
+        with:
+          # The name of the directory that containing the content to be published
+          dir: 'dist'
+          # The name of the remote branch that publishing source for GitHub Pages site
+          branch: 'master'
+          # The remote repository that publishing source for GitHub Pages site, defaults to current repo and is formatted like 'user/repo-name'
+          repo: 'ducng99.github.io'
+          # The personal access token that authorize repo access
+          token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
